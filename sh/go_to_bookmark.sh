@@ -3,6 +3,7 @@
 # Colors and formatting
 CYAN='\033[36m'
 RED='\033[38;5;203m'
+GREEN='\033[38;5;43m'
 BOLD='\033[1m'
 ORANGE='\033[38;5;214m'
 BOLD='\033[1m'
@@ -55,7 +56,7 @@ if [[ "$input" =~ ^[0-9]+$ ]] && [ "$input" -ge 0 ] && [ "$input" -lt "${#bookma
 	selected_dir="${bookmarks[$input]}"
 	if [ -d "$selected_dir" ]; then
 		cd "$selected_dir" || exit
-		echo -e "${CYAN}${BOLD}Changed to:${RESET} $selected_dir"
+		echo -e "${GREEN}${BOLD}Changed to:${RESET} $selected_dir"
 	else
 		echo -e "${RED}${BOLD}Directory no longer exists:${RESET} $selected_dir"
 	fi
