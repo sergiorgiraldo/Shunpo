@@ -1,13 +1,8 @@
 #!/bin/bash
 
 # Colors and formatting
-CYAN='\033[36m'
-RED='\033[38;5;203m'
-GREEN='\033[38;5;43m'
-BOLD='\033[1m'
-ORANGE='\033[38;5;214m'
-BOLD='\033[1m'
-RESET='\033[0m'
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source $SCRIPT_DIR/colors.sh
 
 # File to store bookmarks
 BOOKMARKS_FILE="$HOME/.shunpo_bookmarks"

@@ -33,7 +33,7 @@ add_aliases() {
 }
 
 install() {
-	cp sh/* $INSTALL_DIR
+	cp src/* $INSTALL_DIR
 
 	# add sourcing for .shunporc
 	source_rc_line="source $SHUNPORC"

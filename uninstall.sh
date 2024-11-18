@@ -26,6 +26,7 @@ uninstall() {
 		rm go_to_bookmark.sh
 		rm list_bookmarks.sh
 		rm clear_bookmarks.sh
+        rm colors.sh
 		cd ..
 		rmdir $SHUNPO_DIR
 		echo "Removed $SHUNPO_DIR"

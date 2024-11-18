@@ -1,10 +1,8 @@
 #!/bin/bash
 
 # Colors and formatting
-CYAN='\033[36m'
-ORANGE='\033[38;5;214m'
-BOLD='\033[1m'
-RESET='\033[0m'
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source $SCRIPT_DIR/colors.sh
 
 # Function to print the directory list
 function show_dirs() {
