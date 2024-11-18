@@ -64,6 +64,6 @@ if [[ "$input" =~ ^[0-9]+$ ]] && [ "$input" -ge 0 ] && [ "$input" -lt "${#bookma
         rm -f "$BOOKMARKS_FILE"
         # echo -e "${CYAN}${BOLD}All bookmarks removed. Bookmarks file deleted.${RESET}"
     fi
-else
-    echo -e "${CYAN}${BOLD}Invalid input.${RESET}"
+# else
+#     echo -e "${CYAN}${BOLD}Invalid input.${RESET}"
 fi
