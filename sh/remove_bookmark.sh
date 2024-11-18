@@ -7,7 +7,6 @@ BOLD='\033[1m'
 RESET='\033[0m'
 
 # File to store bookmarks
-# BOOKMARKS_FILE="$HOME/.bookmarks"
 BOOKMARKS_FILE="bookmarks"
 
 # Ensure the bookmarks file exists and is not empty
@@ -23,11 +22,11 @@ function show_bookmarks() {
 	bookmarks=() # Declare a global array to hold bookmarks
 
 	# Print the header
-	echo -e "${CYAN}Shunpo <Bookmarks>${RESET}"
+	echo -e "${CYAN}Shunpo <Remove Bookmark>${RESET}"
 	lines=$((lines + 1))
 
 	# Read bookmarks from the file and display them
-	while IFS= read -r bookmark && [ $counter -lt 10 ]; do
+	while IFS= read -r bookmark; do
 		bookmarks+=("$bookmark") # Add bookmark to the array
 		echo -e "[${BOLD}${ORANGE}$counter${RESET}] $bookmark"
 		lines=$((lines + 1))
@@ -49,13 +48,13 @@ read -rsn1 input
 tput cuu "$lines" # Move the cursor up by the number of lines printed
 tput ed           # Clear everything from the cursor to the end of the screen
 
-# Validate input and handle navigation
+# Validate input and handle bookmark removal
 if [[ "$input" =~ ^[0-9]+$ ]] && [ "$input" -ge 0 ] && [ "$input" -lt "${#bookmarks[@]}" ]; then
-	selected_dir="${bookmarks[$input]}"
-	if [ -d "$selected_dir" ]; then
-		cd "$selected_dir" || exit
-		echo -e "${CYAN}${BOLD}Changed to:${RESET} $selected_dir"
-	else
-		echo -e "${CYAN}${BOLD}Directory no longer exists:${RESET} $selected_dir"
-	fi
+	# Get the selected bookmark to remove
+	selected_index=$input
+	selected_dir="${bookmarks[$selected_index]}"
+
+	# Remove the selected bookmark from the file
+	grep -Fxv "$selected_dir" "$BOOKMARKS_FILE" >"${BOOKMARKS_FILE}.tmp" && mv "${BOOKMARKS_FILE}.tmp" "$BOOKMARKS_FILE"
+	echo -e "${CYAN}${BOLD}Removed bookmark:${RESET} $selected_dir"
 fi
