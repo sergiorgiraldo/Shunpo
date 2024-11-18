@@ -58,6 +58,4 @@ if [[ "$input" =~ ^[0-9]+$ ]]; then
     done
     # Change to the selected directory
     cd "$current_dir" || exit
-else
-    echo "Invalid input"
 fi

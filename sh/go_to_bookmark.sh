@@ -2,13 +2,14 @@
 
 # Colors and formatting
 CYAN='\033[36m'
+RED='\033[38;5;203m'
+BOLD='\033[1m'
 ORANGE='\033[38;5;214m'
 BOLD='\033[1m'
 RESET='\033[0m'
 
 # File to store bookmarks
-# BOOKMARKS_FILE="$HOME/.bookmarks"
-BOOKMARKS_FILE="bookmarks"
+BOOKMARKS_FILE="$HOME/.shunpo_bookmarks"
 
 # Ensure the bookmarks file exists and is not empty
 if [ ! -f "$BOOKMARKS_FILE" ] || [ ! -s "$BOOKMARKS_FILE" ]; then
@@ -23,7 +24,7 @@ function show_bookmarks() {
 	bookmarks=() # Declare a global array to hold bookmarks
 
 	# Print the header
-	echo -e "${CYAN}Shunpo <Bookmarks>${RESET}"
+	echo -e "${CYAN}Shunpo <Go To Bookmark>${RESET}"
 	lines=$((lines + 1))
 
 	# Read bookmarks from the file and display them
@@ -56,6 +57,6 @@ if [[ "$input" =~ ^[0-9]+$ ]] && [ "$input" -ge 0 ] && [ "$input" -lt "${#bookma
 		cd "$selected_dir" || exit
 		echo -e "${CYAN}${BOLD}Changed to:${RESET} $selected_dir"
 	else
-		echo -e "${CYAN}${BOLD}Directory no longer exists:${RESET} $selected_dir"
+		echo -e "${RED}${BOLD}Directory no longer exists:${RESET} $selected_dir"
 	fi
 fi
