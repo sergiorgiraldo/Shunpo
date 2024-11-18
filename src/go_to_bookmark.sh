@@ -9,8 +9,8 @@ BOOKMARKS_FILE="$HOME/.shunpo_bookmarks"
 
 # Ensure the bookmarks file exists and is not empty
 if [ ! -f "$BOOKMARKS_FILE" ] || [ ! -s "$BOOKMARKS_FILE" ]; then
-	echo -e "${CYAN}${BOLD}No bookmarks found.${RESET}"
-	exit 1
+	echo -e "${CYAN}${BOLD}No Bookmarks Found.${RESET}"
+    return 0 2>/dev/null || exit 0
 fi
 
 # Function to display bookmarks
