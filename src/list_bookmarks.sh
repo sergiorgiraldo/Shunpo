@@ -7,5 +7,5 @@ source $SCRIPT_DIR/functions.sh
 
 assert_bookmarks_exist
 show_bookmarks "List Bookmarks"
-read -rsn1 input
+# read -rsn1 input
 clear_output

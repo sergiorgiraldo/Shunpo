@@ -4,22 +4,83 @@
 BOOKMARKS_FILE="$HOME/.shunpo_bookmarks"
 
 # Function to display bookmarks.
+## Function to display bookmarks with pagination.
 function show_bookmarks() {
+	local bookmarks=()
 	local counter=0
-	bookmarks=()
+	local total_bookmarks
+	local current_page=0
+	local max_per_page=10
+	local start_index
+	local end_index
 
-	# Save cursor position.
-	tput sc
-
-	# Print header.
-	echo -e "${CYAN}Shunpo <$1>${RESET}"
-
-	# Read bookmarks from the file and display them.
+	# Read bookmarks into an array.
 	while IFS= read -r bookmark; do
 		bookmarks+=("$bookmark")
-		echo -e "[${BOLD}${ORANGE}$counter${RESET}] $bookmark"
-		counter=$((counter + 1))
 	done <"$BOOKMARKS_FILE"
+
+	total_bookmarks=${#bookmarks[@]}
+	if [ "$total_bookmarks" -eq 0 ]; then
+		echo -e "${CYAN}No bookmarks to display.${RESET}"
+		return
+	fi
+
+	total_pages=$((total_bookmarks / max_per_page))
+
+	# Pagination loop.
+	while true; do
+
+		# Calculate the start and end indices for the current page.
+		start_index=$((current_page * max_per_page))
+		end_index=$((start_index + max_per_page))
+		if [ "$end_index" -gt "$total_bookmarks" ]; then
+			end_index=$total_bookmarks
+		fi
+
+		# Save cursor position.
+		tput sc
+
+		# Print header.
+		echo -e "${CYAN}Shunpo <$1>${RESET}"
+
+		# Display bookmarks for the current page.
+		for ((i = start_index; i < end_index; i++)); do
+			echo -e "[${BOLD}${ORANGE}$((i - start_index))${RESET}] ${bookmarks[i]}"
+		done
+		echo -e "${CYAN}[$((current_page + 1)) / $total_pages]${RESET}"
+
+		# Read input to cycle through pages.
+		read -rsn1 input
+		if [[ "$input" == "n" ]]; then
+			if [ $((current_page + 1)) -le $((total_pages - 1)) ]; then
+				current_page=$((current_page + 1))
+			fi
+
+		elif [[ "$input" == "p" ]]; then
+			if [ $((current_page - 1)) -ge 0 ]; then
+				current_page=$((current_page - 1))
+			fi
+
+        # TODO: modify this if statement to always return the selected bookmark,
+        # then handle the deletion or change_dir operation in the relevant script.
+        # Use this chunk to always handle the selection task.
+		elif [[ "$input" =~ ^[0-9]+$ ]] && [ "$input" -ge 0 ]\
+            && [ "$input" -lt $max_per_page ]; then
+				selected_dir="${bookmarks[$input]}"
+				clear_output
+				if [ -d "$selected_dir" ]; then
+					cd "$selected_dir" || exit
+					echo -e "${GREEN}${BOLD}Changed to:${RESET} $selected_dir"
+				else
+					echo -e "${RED}${BOLD}Directory no longer exists:${RESET} $selected_dir"
+				fi
+			fi
+		else
+			clear_output
+			exit
+		fi
+		clear_output
+	done
 }
 
 # Function to outputs after saved cursor position.
