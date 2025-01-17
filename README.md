@@ -1,6 +1,6 @@
 <div align="center">
   <img src="https://github.com/user-attachments/assets/fbdf0831-0d6a-495d-bdbf-c0aaa28bff6c" alt="Logo" width="400">
-  <p style="font-size: 100px;"><i>Speedy directory navigation with minimal mental overhead.</i></p>
+  <p style="font-size: 100px;"><i>Quick navigation with minimal mental overhead.</i></p>
 </div>
 
 ----
