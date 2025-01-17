@@ -5,7 +5,7 @@
 
 ----
 Shunpo is a minimalist bash tool that tries to make directory navigation in terminal just a little bit faster.
-If you frequently use commands like `cd ../../`, `pushd`, `popd`, Shunpo might make your life easier by allowing you to jump to directories with fewer keystrokes.
+If you frequently use commands like `cd`, `pushd`, `popd`, Shunpo might make your life easier by allowing you to jump to directories with fewer keystrokes.
 
 Installation
 ----
@@ -14,10 +14,11 @@ Run `install.sh && source ~/.bashrc`
 Commands
 ----
 `sb`: Add the current directory to bookmarks.  
-`sl`: List all bookmarks.  
-`sr`: Remove a bookmark.  
+`sg`: Go to a bookmark.
+`sr`: Remove a bookmark. 
+`sl`: List all bookmarks.   
 `sc`: Clear all bookmarks.  
-`sj`: Jump to a parent directory from the current directory.
+`sj`: Jump to a parent directory.
 
 Uninstalling
 ----
