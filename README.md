@@ -14,10 +14,10 @@ Run `install.sh && source ~/.bashrc`
 Commands
 ----
 `sb`: Add the current directory to bookmarks.  
-`sg`: Go to a bookmark.
-`sr`: Remove a bookmark. 
-`sl`: List all bookmarks.   
-`sc`: Clear all bookmarks.  
+`sg`: Go to a bookmark.  
+`sr`: Remove a bookmark.  
+`sl`: List all bookmarks.  
+`sc`: Clear all bookmarks.   
 `sj`: Jump to a parent directory.
 
 Uninstalling
