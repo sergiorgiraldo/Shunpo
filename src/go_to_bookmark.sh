@@ -5,18 +5,23 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source $SCRIPT_DIR/colors.sh
 source $SCRIPT_DIR/functions.sh
 
-assert_bookmarks_exist
+if ! assert_bookmarks_exist; then
+	return 1
+fi
 show_bookmarks "Go To Bookmark"
+if [[ -z $selected_dir ]]; then
+	unset selected_dir
+	return
 
-# Validate input and navigate to directory.
-read -rsn1 input
-if [[ "$input" =~ ^[0-9]+$ ]] && [ "$input" -ge 0 ] && [ "$input" -lt "${#bookmarks[@]}" ]; then
-	selected_dir="${bookmarks[$input]}"
-	clear_output
-	if [ -d "$selected_dir" ]; then
-		cd "$selected_dir" || exit
+elif [[ -d $selected_dir ]]; then
+	if cd "$selected_dir"; then
 		echo -e "${GREEN}${BOLD}Changed to:${RESET} $selected_dir"
 	else
-		echo -e "${RED}${BOLD}Directory no longer exists:${RESET} $selected_dir"
+		echo -e "${RED}${BOLD}Failed to find directory:${RESET} $selected_dir"
 	fi
+
+else
+	echo -e "${RED}${BOLD}Directory no longer exists:${RESET} $selected_dir"
 fi
+
+unset selected_dir
