@@ -1,14 +1,16 @@
 #!/bin/bash
 
+# This script should be sourced and not executed.
+
 # Colors and formatting.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source $SCRIPT_DIR/colors.sh
 source $SCRIPT_DIR/functions.sh
 
 function handle_kill() {
-    clear_output
-    tput cnorm
-    return 1
+	clear_output
+	cleanup
+	return 1
 }
 
 trap 'handle_kill; return 1' SIGINT
@@ -19,8 +21,8 @@ fi
 
 show_bookmarks "Go To Bookmark"
 if [[ -z $selected_dir ]]; then
-	unset selected_dir
-	return
+	cleanup
+	return 1
 
 elif [[ -d $selected_dir ]]; then
 	if cd "$selected_dir"; then
@@ -33,6 +35,4 @@ else
 	echo -e "${RED}${BOLD}Directory no longer exists:${RESET} $selected_dir"
 fi
 
-unset selected_dir
-trap - SIGINT
-
+cleanup

@@ -11,7 +11,6 @@ function show_bookmarks() {
 	local last_page
 	local start_index
 	local end_index
-	local selected_bookmark_index
 	local middle_row
 	local padding_lines
 
@@ -64,7 +63,7 @@ function show_bookmarks() {
 			echo -e "${CYAN}[$((current_page + 1)) / $((last_page))]${RESET}"
 		fi
 
-		# Read input to cycle through pages.
+		# Read input to select bookmarks and cycle through pages.
 		read -rsn1 input
 		if [[ $input == "n" ]]; then
 			if [ $((current_page + 1)) -le $((last_page - 1)) ]; then
@@ -100,6 +99,7 @@ function show_bookmarks() {
 	return
 }
 
+# Function to open several lines of space before writing when near the end of the terminal
 function add_space() {
 	# Get total terminal lines.
 	total_lines=$(tput lines)
@@ -129,6 +129,7 @@ function assert_bookmarks_exist() {
 	# Ensure the bookmarks file exists and is not empty.
 	if [ ! -f "$BOOKMARKS_FILE" ] || [ ! -s "$BOOKMARKS_FILE" ]; then
 		echo -e "${CYAN}${BOLD}No Bookmarks Found.${RESET}"
+        cleanup
 		return 1
 	fi
 }
@@ -159,4 +160,21 @@ function show_parent_dirs() {
 			break
 		fi
 	done
+}
+
+function cleanup() {
+    # Clean up to avoid namespace pollution.
+    unset BOOKMARKS_FILE
+    unset selected_dir
+    unset selected_bookmark_index
+    unset show_bookmarks
+    unset add_space
+    unset clear_output
+    unset assert_bookmarks_exist
+    unset show_parent_dirs
+    unset handle_kill
+    tput cnorm
+    stty echo
+    trap - SIGINT
+    unset cleanup
 }
