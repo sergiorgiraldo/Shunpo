@@ -7,7 +7,7 @@ source $SCRIPT_DIR/functions.sh
 
 # Remove the bookmarks file if it exists.
 if [ ! -f "$BOOKMARKS_FILE" ] || [ ! -s "$BOOKMARKS_FILE" ]; then
-	echo -e "${GREEN}${BOLD}No Bookmarks Found.${RESET}"
+	echo -e "${CYAN}${BOLD}No Bookmarks Found.${RESET}"
 	exit 1
 
 else
