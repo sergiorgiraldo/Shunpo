@@ -6,7 +6,7 @@ source $SCRIPT_DIR/colors.sh
 source $SCRIPT_DIR/functions.sh
 
 # File to store bookmarks.
-MAX_BOOKMARKS=10
+MAX_BOOKMARKS=128
 
 # Ensure the bookmarks file exists and is not empty
 if [ ! -f "$BOOKMARKS_FILE" ]; then
