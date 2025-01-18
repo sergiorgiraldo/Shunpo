@@ -5,19 +5,17 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/colors.sh"
 source "$SCRIPT_DIR/functions.sh"
 
-# Function to handle Ctrl+C (SIGINT)
 function handle_kill() {
 	clear_output
-	tput cnorm
+	cleanup
 	exit 1
 }
 
-# Trap SIGINT and call the handler
 trap 'handle_kill' SIGINT
 
 # Check if bookmarks exist
 if ! assert_bookmarks_exist; then
-	return 1
+	exit 1
 fi
 
 show_bookmarks "Remove Bookmarks"
@@ -28,8 +26,8 @@ while IFS= read -r bookmark; do
 done <"$BOOKMARKS_FILE"
 
 if [[ -z $selected_dir ]]; then
-    unset selected_dir
-    exit
+	unset selected_dir
+	exit 1
 
 elif [[ "$selected_bookmark_index" -ge 0 ]] && [[ "$selected_bookmark_index" -lt "${#bookmarks[@]}" ]]; then
 	# Remove the selected bookmark from the file.
@@ -45,3 +43,5 @@ elif [[ "$selected_bookmark_index" -ge 0 ]] && [[ "$selected_bookmark_index" -lt
 else
 	exit
 fi
+
+cleanup
