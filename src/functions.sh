@@ -1,41 +1,53 @@
 #!/bin/bash
-
 # Default Bookmarks Path.
 BOOKMARKS_FILE="$HOME/.shunpo_bookmarks"
 
-# Function to display bookmarks.
-## Function to display bookmarks with pagination.
+# Function to display bookmarks with pagination.
 function show_bookmarks() {
 	local bookmarks=()
-	local counter=0
 	local total_bookmarks
 	local current_page=0
 	local max_per_page=10
+	local last_page
 	local start_index
 	local end_index
+	local selected_bookmark_index
+	local middle_row
+	local padding_lines
+
+	tput civis
 
 	# Read bookmarks into an array.
 	while IFS= read -r bookmark; do
 		bookmarks+=("$bookmark")
 	done <"$BOOKMARKS_FILE"
 
+	# Check that bookmarks file is not empty.
 	total_bookmarks=${#bookmarks[@]}
 	if [ "$total_bookmarks" -eq 0 ]; then
-		echo -e "${CYAN}No bookmarks to display.${RESET}"
+		echo -e "${BOLD}${CYAN}No Bookmarks Found.${RESET}"
 		return
 	fi
 
-	total_pages=$((total_bookmarks / max_per_page))
+	last_page=$(((total_bookmarks + max_per_page / 2) / max_per_page))
 
 	# Pagination loop.
 	while true; do
-
 		# Calculate the start and end indices for the current page.
 		start_index=$((current_page * max_per_page))
 		end_index=$((start_index + max_per_page))
 		if [ "$end_index" -gt "$total_bookmarks" ]; then
 			end_index=$total_bookmarks
 		fi
+
+		# Pad the bottom of the terminal to avoid erroneous printing.
+		if [ "$max_per_page" -lt "$total_bookmarks" ]; then
+			padding_lines=$max_per_page
+		else
+			padding_lines=$total_bookmarks
+		fi
+		padding_lines=$((padding_lines + 2))
+		add_space $padding_lines
 
 		# Save cursor position.
 		tput sc
@@ -47,43 +59,67 @@ function show_bookmarks() {
 		for ((i = start_index; i < end_index; i++)); do
 			echo -e "[${BOLD}${ORANGE}$((i - start_index))${RESET}] ${bookmarks[i]}"
 		done
-		echo -e "${CYAN}[$((current_page + 1)) / $total_pages]${RESET}"
+
+		if [ $last_page -ge 1 ]; then
+			echo -e "${CYAN}[$((current_page + 1)) / $((last_page))]${RESET}"
+		fi
 
 		# Read input to cycle through pages.
 		read -rsn1 input
-		if [[ "$input" == "n" ]]; then
-			if [ $((current_page + 1)) -le $((total_pages - 1)) ]; then
+		if [[ $input == "n" ]]; then
+			if [ $((current_page + 1)) -le $((last_page - 1)) ]; then
 				current_page=$((current_page + 1))
 			fi
+			clear_output
 
-		elif [[ "$input" == "p" ]]; then
+		elif [[ $input == "p" ]]; then
 			if [ $((current_page - 1)) -ge 0 ]; then
 				current_page=$((current_page - 1))
 			fi
+			clear_output
 
-        # TODO: modify this if statement to always return the selected bookmark,
-        # then handle the deletion or change_dir operation in the relevant script.
-        # Use this chunk to always handle the selection task.
-		elif [[ "$input" =~ ^[0-9]+$ ]] && [ "$input" -ge 0 ]\
-            && [ "$input" -lt $max_per_page ]; then
-				selected_dir="${bookmarks[$input]}"
+		elif [[ $input =~ ^[0-9]+$ ]] && [ $input -ge 0 ] && [ $input -lt $max_per_page ]; then
+			# Process bookmark selection input.
+			selected_bookmark_index=$((current_page * max_per_page + $input))
+			if [[ $selected_bookmark_index -lt $total_bookmarks ]]; then
+				selected_dir="${bookmarks[$selected_bookmark_index]}"
 				clear_output
-				if [ -d "$selected_dir" ]; then
-					cd "$selected_dir" || exit
-					echo -e "${GREEN}${BOLD}Changed to:${RESET} $selected_dir"
-				else
-					echo -e "${RED}${BOLD}Directory no longer exists:${RESET} $selected_dir"
-				fi
+				tput cnorm
+				return
+			else
+				clear_output
 			fi
 		else
 			clear_output
-			exit
+			tput cnorm
+			return
 		fi
-		clear_output
 	done
+	clear_output
+	tput cnorm
+	return
 }
 
-# Function to outputs after saved cursor position.
+function add_space() {
+	# Get total terminal lines.
+	total_lines=$(tput lines)
+
+	# Fetch the current cursor row position using ANSI escape codes.
+	cursor_line=$(IFS=';' read -sdR -p $'\033[6n' -a pos && echo "${pos[0]#*[}")
+
+	# Calculate lines from current position to bottom.
+	lines_to_bottom=$((total_lines - cursor_line))
+
+	# If not enough lines, add extra lines.
+	if [ "$lines_to_bottom" -lt $1 ]; then
+		extra_lines=$(($1 - lines_to_bottom))
+		for ((i = 0; i < extra_lines; i++)); do
+			echo
+		done
+		tput cuu $1
+	fi
+}
+
 function clear_output() {
 	tput rc # Restore saved cursor position.
 	tput ed # Clear everything below the cursor.
@@ -92,8 +128,8 @@ function clear_output() {
 function assert_bookmarks_exist() {
 	# Ensure the bookmarks file exists and is not empty.
 	if [ ! -f "$BOOKMARKS_FILE" ] || [ ! -s "$BOOKMARKS_FILE" ]; then
-		echo -e "${CYAN}${BOLD}No Bookmarks found.${RESET}"
-		exit 1
+		echo -e "${CYAN}${BOLD}No Bookmarks Found.${RESET}"
+		return 1
 	fi
 }
 
