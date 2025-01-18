@@ -5,9 +5,18 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source $SCRIPT_DIR/colors.sh
 source $SCRIPT_DIR/functions.sh
 
+function handle_kill() {
+    clear_output
+    tput cnorm
+    return 1
+}
+
+trap 'handle_kill; return 1' SIGINT
+
 if ! assert_bookmarks_exist; then
 	return 1
 fi
+
 show_bookmarks "Go To Bookmark"
 if [[ -z $selected_dir ]]; then
 	unset selected_dir
@@ -25,3 +34,5 @@ else
 fi
 
 unset selected_dir
+trap - SIGINT
+
