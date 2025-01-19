@@ -3,7 +3,7 @@
 BOOKMARKS_FILE="$HOME/.shunpo_bookmarks"
 
 # Function to display bookmarks with pagination.
-function show_bookmarks() {
+function interact_bookmarks() {
 	local bookmarks=()
 	local total_bookmarks
 	local current_page=0
@@ -225,7 +225,7 @@ function cleanup() {
 	unset BOOKMARKS_FILE
 	unset selected_dir
 	unset selected_bookmark_index
-	unset show_bookmarks
+	unset interact_bookmarks
 	unset add_space
 	unset clear_output
 	unset assert_bookmarks_exist

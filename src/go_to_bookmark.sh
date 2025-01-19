@@ -21,7 +21,7 @@ if ! assert_bookmarks_exist; then
 	return 1
 fi
 
-show_bookmarks "Go To Bookmark"
+interact_bookmarks "Go To Bookmark"
 if [[ -z $selected_dir ]]; then
 	if declare -f cleanup >/dev/null; then
 		cleanup

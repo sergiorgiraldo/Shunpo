@@ -17,5 +17,5 @@ if ! assert_bookmarks_exist; then
 	exit 1
 fi
 
-show_bookmarks "List Bookmarks"
+interact_bookmarks "List Bookmarks"
 cleanup

@@ -18,7 +18,7 @@ if ! assert_bookmarks_exist; then
 	exit 1
 fi
 
-show_bookmarks "Remove Bookmarks"
+interact_bookmarks "Remove Bookmarks"
 
 bookmarks=()
 while IFS= read -r bookmark; do
