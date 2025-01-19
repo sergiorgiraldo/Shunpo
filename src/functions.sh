@@ -28,7 +28,7 @@ function show_bookmarks() {
 		return
 	fi
 
-	last_page=$(((total_bookmarks + max_per_page / 2) / max_per_page))
+	last_page=$(((total_bookmarks + max_per_page - 1) / max_per_page))
 
 	# Pagination loop.
 	while true; do
@@ -59,7 +59,7 @@ function show_bookmarks() {
 			echo -e "[${BOLD}${ORANGE}$((i - start_index))${RESET}] ${bookmarks[i]}"
 		done
 
-		if [ $last_page -ge 1 ]; then
+		if [ $last_page -gt 1 ]; then
 			echo -e "${CYAN}[$((current_page + 1)) / $((last_page))]${RESET}"
 		fi
 
@@ -99,35 +99,93 @@ function show_bookmarks() {
 	return
 }
 
-function show_parent_dirs() {
+function jump_to_parent_dir() {
 	local current_dir=$(pwd)
-	local counter=1    # Start indexing at 1.
-	local max_levels=9 # Limit to 9 levels. 0 is the current directory.
+	local max_levels=128
+	local parent_dirs=()
+	local total_parents
+	local current_page=0
+	local max_per_page=10
+	local last_page
+	local start_index
+	local end_index
 
-	# Save cursor position.
-	tput sc
+	tput civis
 
-	# Print the header in cyan with "Shunpo <Jump>"
-	echo -e "${CYAN}Shunpo <Jump>${RESET}"
+	# Collect all parent directories.
+	while [ "$current_dir" != "/" ] && [ "${#parent_dirs[@]}" -lt "$max_levels" ]; do
+		parent_dirs+=("$current_dir")
+		current_dir=$(dirname "$current_dir")
+	done
+	parent_dirs+=("/") # Include root.
 
-	# Print the current directory on the line below the header
-	echo -e "Current Directory: ${BOLD}${CYAN}$current_dir${RESET}"
+	total_parents=${#parent_dirs[@]}
+	last_page=$(((total_parents + max_per_page - 1) / max_per_page))
 
-	# Print the list of directories.
-	while [ "$counter" -le "$max_levels" ]; do
-		current_dir=$(dirname "$current_dir") # Move to the parent directory.
-		echo -e "[${BOLD}${ORANGE}$counter${RESET}] $current_dir"
-		lines=$((lines + 1))
-		counter=$((counter + 1))
+	while true; do
+		# Calculate start and end indices for pagination.
+		start_index=$((current_page * max_per_page))
+		end_index=$((start_index + max_per_page))
+		if [ "$end_index" -gt "$total_parents" ]; then
+			end_index=$total_parents
+		fi
 
-		# Stop if the root directory is reached.
-		if [ "$current_dir" == "/" ]; then
-			break
+		# Pad the bottom of the terminal to avoid erroneous printing.
+		if [ "$max_per_page" -lt "$total_parents" ]; then
+			padding_lines=$max_per_page
+		else
+			padding_lines=$total_parents
+		fi
+		padding_lines=$((padding_lines + 2))
+		add_space $padding_lines
+
+		tput sc
+		echo -e "${CYAN}Shunpo <Jump to Parent>${RESET}"
+
+		# Display the current page of parent directories.
+		for ((i = start_index; i < end_index; i++)); do
+			echo -e "[${BOLD}${ORANGE}$((i - start_index))${RESET}] ${parent_dirs[i]}"
+		done
+
+		if [ $last_page -gt 1 ]; then
+			echo -e "${CYAN}[$((current_page + 1)) / $last_page]${RESET}"
+		fi
+
+		# Read and process user input.
+		read -rsn1 input
+		if [[ "$input" == "n" ]]; then
+			if [ $((current_page + 1)) -lt "$last_page" ]; then
+				current_page=$((current_page + 1))
+			fi
+			clear_output
+
+		elif [[ "$input" == "p" ]]; then
+			if [ $((current_page - 1)) -ge 0 ]; then
+				current_page=$((current_page - 1))
+			fi
+			clear_output
+
+		elif [[ "$input" =~ ^[0-9]+$ ]] && [ "$input" -gt 0 ] && [ "$input" -le "$max_per_page" ]; then
+			selected_index=$((start_index + input))
+			if [[ "$selected_index" -lt "$total_parents" ]]; then
+				clear_output
+				tput cnorm
+				cd "${parent_dirs[$selected_index]}" || exit
+				echo -e "${GREEN}${BOLD}Changed to:${RESET} ${parent_dirs[$selected_index]}"
+				return
+			fi
+		else
+			clear_output
+			tput cnorm
+			return
 		fi
 	done
+	clear_output
+	tput cnorm
+	return
 }
 
-# Function to open several lines of space before writing when near the end of the terminal
+# Function to open several lines of space before writing when near the end of the terminal.
 function add_space() {
 	# Get total terminal lines.
 	total_lines=$(tput lines)
@@ -171,7 +229,7 @@ function cleanup() {
 	unset add_space
 	unset clear_output
 	unset assert_bookmarks_exist
-	unset show_parent_dirs
+	unset jump_to_parent_dir
 	unset handle_kill
 	tput cnorm
 	stty echo

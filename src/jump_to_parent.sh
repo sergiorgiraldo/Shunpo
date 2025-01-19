@@ -1,23 +1,26 @@
 #!/bin/bash
 
-# Colors and formatting.
+# This script should be sourced and not executed.
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source $SCRIPT_DIR/colors.sh
 source $SCRIPT_DIR/functions.sh
 
-show_parent_dirs
+function handle_kill() {
+    clear_output
+    if declare -f cleanup >/dev/null; then
+        cleanup
+    fi
+    return 1
+}
 
-# Validate the input is a number.
-read -rsn1 input
-if [[ "$input" =~ ^[0-9]+$ ]]; then
-	# Get target directory.
-	current_dir=$(pwd)
-	for ((i = 0; i < input; i++)); do
-		current_dir=$(dirname "$current_dir")
-	done
+trap 'handle_kill; return 1' SIGINT
 
-	clear_output
-	# Change to the target directory.
-	cd "$current_dir" || exit
-	echo -e "${GREEN}${BOLD}Changed to:${RESET} $current_dir"
+if ! assert_bookmarks_exist; then
+    return 1
+fi
+
+jump_to_parent_dir
+if declare -f cleanup >/dev/null; then
+    cleanup
 fi
