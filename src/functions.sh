@@ -99,6 +99,34 @@ function show_bookmarks() {
 	return
 }
 
+function show_parent_dirs() {
+	local current_dir=$(pwd)
+	local counter=1    # Start indexing at 1.
+	local max_levels=9 # Limit to 9 levels. 0 is the current directory.
+
+	# Save cursor position.
+	tput sc
+
+	# Print the header in cyan with "Shunpo <Jump>"
+	echo -e "${CYAN}Shunpo <Jump>${RESET}"
+
+	# Print the current directory on the line below the header
+	echo -e "Current Directory: ${BOLD}${CYAN}$current_dir${RESET}"
+
+	# Print the list of directories.
+	while [ "$counter" -le "$max_levels" ]; do
+		current_dir=$(dirname "$current_dir") # Move to the parent directory.
+		echo -e "[${BOLD}${ORANGE}$counter${RESET}] $current_dir"
+		lines=$((lines + 1))
+		counter=$((counter + 1))
+
+		# Stop if the root directory is reached.
+		if [ "$current_dir" == "/" ]; then
+			break
+		fi
+	done
+}
+
 # Function to open several lines of space before writing when near the end of the terminal
 function add_space() {
 	# Get total terminal lines.
@@ -129,52 +157,24 @@ function assert_bookmarks_exist() {
 	# Ensure the bookmarks file exists and is not empty.
 	if [ ! -f "$BOOKMARKS_FILE" ] || [ ! -s "$BOOKMARKS_FILE" ]; then
 		echo -e "${CYAN}${BOLD}No Bookmarks Found.${RESET}"
-        cleanup
+		cleanup
 		return 1
 	fi
 }
 
-function show_parent_dirs() {
-	local current_dir=$(pwd)
-	local counter=1    # Start indexing at 1.
-	local max_levels=9 # Limit to 9 levels. 0 is the current directory.
-
-	# Save cursor position.
-	tput sc
-
-	# Print the header in cyan with "Shunpo <Jump>"
-	echo -e "${CYAN}Shunpo <Jump>${RESET}"
-
-	# Print the current directory on the line below the header
-	echo -e "Current Directory: ${BOLD}${CYAN}$current_dir${RESET}"
-
-	# Print the list of directories.
-	while [ "$counter" -le "$max_levels" ]; do
-		current_dir=$(dirname "$current_dir") # Move to the parent directory.
-		echo -e "[${BOLD}${ORANGE}$counter${RESET}] $current_dir"
-		lines=$((lines + 1))
-		counter=$((counter + 1))
-
-		# Stop if the root directory is reached.
-		if [ "$current_dir" == "/" ]; then
-			break
-		fi
-	done
-}
-
 function cleanup() {
-    # Clean up to avoid namespace pollution.
-    unset BOOKMARKS_FILE
-    unset selected_dir
-    unset selected_bookmark_index
-    unset show_bookmarks
-    unset add_space
-    unset clear_output
-    unset assert_bookmarks_exist
-    unset show_parent_dirs
-    unset handle_kill
-    tput cnorm
-    stty echo
-    trap - SIGINT
-    unset cleanup
+	# Clean up to avoid namespace pollution.
+	unset BOOKMARKS_FILE
+	unset selected_dir
+	unset selected_bookmark_index
+	unset show_bookmarks
+	unset add_space
+	unset clear_output
+	unset assert_bookmarks_exist
+	unset show_parent_dirs
+	unset handle_kill
+	tput cnorm
+	stty echo
+	trap - SIGINT
+	unset cleanup
 }
