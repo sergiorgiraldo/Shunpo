@@ -16,10 +16,6 @@ function handle_kill() {
 
 trap 'handle_kill; return 1' SIGINT
 
-if ! assert_bookmarks_exist; then
-    return 1
-fi
-
 jump_to_parent_dir
 if declare -f cleanup >/dev/null; then
     cleanup
