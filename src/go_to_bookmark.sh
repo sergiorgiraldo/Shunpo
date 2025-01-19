@@ -9,9 +9,9 @@ source $SCRIPT_DIR/functions.sh
 
 function handle_kill() {
 	clear_output
-    if declare -f cleanup > /dev/null; then
-        cleanup
-    fi
+	if declare -f cleanup >/dev/null; then
+		cleanup
+	fi
 	return 1
 }
 
@@ -23,9 +23,9 @@ fi
 
 show_bookmarks "Go To Bookmark"
 if [[ -z $selected_dir ]]; then
-    if declare -f cleanup > /dev/null; then
-        cleanup
-    fi
+	if declare -f cleanup >/dev/null; then
+		cleanup
+	fi
 	return 1
 
 elif [[ -d $selected_dir ]]; then
