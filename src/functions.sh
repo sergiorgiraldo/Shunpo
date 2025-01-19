@@ -9,7 +9,7 @@ function interact_bookmarks() {
 	local current_page=0
 	local max_per_page=10
 	local last_page
-	local start_index
+    local start_index
 	local end_index
 	local middle_row
 	local padding_lines
@@ -185,7 +185,117 @@ function jump_to_parent_dir() {
 	return
 }
 
-# Function to open several lines of space before writing when near the end of the terminal.
+function jump_to_child_dir() {
+	local current_dir=$(pwd)
+	local max_per_page=10
+	local current_page=0
+	local last_page
+	local start_index
+	local end_index
+	local child_dirs=()
+	local selected_path="$current_dir" # selected path gets updated in each iteration.
+	local start_dir=$(realpath "$current_dir")
+	local is_start_dir=1
+	local total_child_dirs
+
+	tput civis
+
+	while true; do
+		# Collect immediate child directories of the current selected path.
+		child_dirs=()
+		while IFS= read -r dir; do
+			child_dirs+=("$dir")
+		done < <(find "$selected_path" -maxdepth 1 -mindepth 1 -type d | sort)
+		total_child_dirs=${#child_dirs[@]}
+
+		start_index=$((current_page * max_per_page))
+		end_index=$((start_index + max_per_page))
+		if [ "$end_index" -gt "$total_child_dirs" ]; then
+			end_index=$total_child_dirs
+		fi
+
+		last_page=$(((total_child_dirs + max_per_page - 1) / max_per_page))
+
+		# Pad the bottom of the terminal to avoid erroneous printing.
+		if [ "$max_per_page" -lt "$total_child_dirs" ]; then
+			padding_lines=$max_per_page
+		else
+			padding_lines=$total_child_dirs
+		fi
+		padding_lines=$((padding_lines + 3))
+		add_space $padding_lines
+
+		tput sc
+		echo -e "${CYAN}Shunpo <Jump to Child>${RESET}"
+		echo -e "Selected Path: ${BOLD}${CYAN}$selected_path${RESET}"
+
+		if [[ "$total_child_dirs" -eq 0 ]]; then
+			echo -e "${BOLD}${ORANGE}No Child Directories.${RESET}"
+			if [[ $is_start_dir -eq 1 ]]; then
+				return 1
+			fi
+		else
+			# Print child directories.
+			for ((i = start_index; i < end_index; i++)); do
+				echo -e "[${BOLD}${ORANGE}$((i - start_index))${RESET}] ${child_dirs[i]#$selected_path}"
+			done
+
+			if [ $last_page -gt 1 ]; then
+				echo -e "${CYAN}[$((current_page + 1)) / $last_page]${RESET}"
+			fi
+		fi
+
+		read -rsn1 input
+		if [[ "$input" == "n" ]]; then
+			if [ $((current_page + 1)) -lt "$last_page" ]; then
+				current_page=$((current_page + 1))
+			fi
+			clear_output
+		elif [[ "$input" == "p" ]]; then
+			if [ $((current_page - 1)) -ge 0 ]; then
+				current_page=$((current_page - 1))
+			fi
+			clear_output
+		elif [[ "$input" = "b" ]]; then
+			if [[ $is_start_dir -eq 1 ]]; then
+				clear_output
+				return 0
+			fi
+			selected_path=$(realpath "$selected_path/../")
+			if [[ "$selected_path" == "$start_dir" ]]; then
+				is_start_dir=1
+			else
+				is_start_dir=0
+			fi
+			current_page=0
+			clear_output
+
+		elif [[ "$input" == "" ]]; then
+			clear_output
+			cd "$selected_path" || exit
+			echo -e "${GREEN}${BOLD}Changed to:${RESET} $selected_path"
+			break
+		elif [[ "$input" =~ ^[0-9]+$ ]] && [[ "$input" -ge 0 ]] && [[ "$input" -lt $max_per_page ]]; then
+			selected_index=$((start_index + input))
+			if [[ "$selected_index" -lt "$total_child_dirs" ]]; then
+				selected_path="${child_dirs[selected_index]}"
+				is_start_dir=0
+				current_page=0
+			fi
+			clear_output
+			tput cnorm
+		else
+			clear_output
+			tput cnorm
+			break
+		fi
+	done
+	tput cnorm
+	return 0
+}
+
+# Function to open several lines of space before writing when near the end of the terminal
+# to avoid visual issues.
 function add_space() {
 	# Get total terminal lines.
 	total_lines=$(tput lines)
@@ -230,6 +340,7 @@ function cleanup() {
 	unset clear_output
 	unset assert_bookmarks_exist
 	unset jump_to_parent_dir
+	unset jump_to_child_dir
 	unset handle_kill
 	tput cnorm
 	stty echo
