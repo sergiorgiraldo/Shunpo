@@ -1,7 +1,7 @@
 <div align="center">
   <picture>
     <source srcset="logos/shunpo_logo.png" media="(prefers-color-scheme: dark)">
-    <img src="logos/shunpo_logo_inverted.png" alt="Logo" width="550" style="margin: 0; padding: 0;">
+    <img src="logos/shunpo_logo_inverted.png" alt="Logo" width="500" style="margin: 0; padding: 0;">
   </picture>
   <h3><i>Speedy navigation with minimal mental overhead.</i></h3>
 </div>
