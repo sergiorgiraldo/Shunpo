@@ -20,18 +20,19 @@ Run `install.sh && source ~/.bashrc`.
 
 Commands
 ----
-#### Bookmarking
+#### Bookmarking:
 `sb`: Add the current directory to bookmarks.  
 `sg`: Go to a bookmark.  
 `sr`: Remove a bookmark.  
 `sl`: List all bookmarks.  
 `sc`: Clear all bookmarks.   
 
-#### Navigation
+#### Navigation:
 `sj`: "Jump" up to a parent directory.  
 `sd`: "Dive" down to a child directory.
 
-#### Pages
+#### Selection:
+`0~9`: Select an option.  
 `n`: Next page.  
 `p`: Previous page.  
 `b`: Move selection back to parent directory. (For `sd` only.)  
