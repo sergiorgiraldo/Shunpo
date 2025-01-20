@@ -18,6 +18,10 @@ Installation
 ----
 Run `install.sh && source ~/.bashrc`.
 
+Tutorial Video
+----
+[![Tutorial](http://i.ytimg.com/vi/gaEYkoFPwK4/hqdefault.jpg)](https://www.youtube.com/watch?v=gaEYkoFPwK4)
+
 Commands
 ----
 #### Bookmarking:
