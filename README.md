@@ -3,7 +3,7 @@
     <source srcset="logos/shunpo_logo.png" media="(prefers-color-scheme: dark)">
     <img src="logos/shunpo_logo_inverted.png" alt="Logo" width="400" style="margin: 0; padding: 0;">
   </picture>
-  <h4><i>Speedy navigation with minimal mental overhead.</i></h4>
+  <h4><i>Quick navigation with minimal mental overhead.</i></h4>
 </div>
 
 ----
