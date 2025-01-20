@@ -13,7 +13,7 @@ function handle_kill() {
 
 trap 'handle_kill' SIGINT
 
-# Check if bookmarks exist
+# Check if bookmarks exist.
 if ! assert_bookmarks_exist; then
 	exit 1
 fi
@@ -41,7 +41,7 @@ elif [[ "$selected_bookmark_index" -ge 0 ]] && [[ "$selected_bookmark_index" -lt
 		rm -f "$BOOKMARKS_FILE"
 	fi
 else
-	exit
+	exit 1
 fi
 
 cleanup

@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Default Bookmarks Path.
 BOOKMARKS_FILE="$HOME/.shunpo_bookmarks"
 
@@ -11,7 +12,6 @@ function interact_bookmarks() {
 	local last_page
 	local start_index
 	local end_index
-	local middle_row
 	local padding_lines
 
 	tput civis
@@ -24,8 +24,8 @@ function interact_bookmarks() {
 	# Check that bookmarks file is not empty.
 	total_bookmarks=${#bookmarks[@]}
 	if [ "$total_bookmarks" -eq 0 ]; then
-		echo -e "${BOLD}${CYAN}No Bookmarks Found.${RESET}"
-		return
+		echo -e "${BOLD}${ORANGE}No Bookmarks Found.${RESET}"
+		return 0
 	fi
 
 	last_page=$(((total_bookmarks + max_per_page - 1) / max_per_page))
@@ -52,7 +52,7 @@ function interact_bookmarks() {
 		tput sc
 
 		# Print header.
-		echo -e "${CYAN}Shunpo <$1>${RESET}"
+		echo -e "${BOLD}${CYAN}Shunpo <$1>${RESET}"
 
 		# Display bookmarks for the current page.
 		for ((i = start_index; i < end_index; i++)); do
@@ -77,26 +77,26 @@ function interact_bookmarks() {
 			fi
 			clear_output
 
-		elif [[ $input =~ ^[0-9]+$ ]] && [ $input -ge 0 ] && [ $input -lt $max_per_page ]; then
+		elif [[ $input =~ ^[0-9]+$ ]] && [ "$input" -ge 0 ] && [ "$input" -lt $max_per_page ]; then
 			# Process bookmark selection input.
-			selected_bookmark_index=$((current_page * max_per_page + $input))
+			selected_bookmark_index=$((current_page * max_per_page + input))
 			if [[ $selected_bookmark_index -lt $total_bookmarks ]]; then
 				selected_dir="${bookmarks[$selected_bookmark_index]}"
 				clear_output
 				tput cnorm
-				return
+				return 0
 			else
 				clear_output
 			fi
 		else
 			clear_output
 			tput cnorm
-			return
+			return 0
 		fi
 	done
 	clear_output
 	tput cnorm
-	return
+	return 0
 }
 
 function jump_to_parent_dir() {
@@ -109,6 +109,7 @@ function jump_to_parent_dir() {
 	local last_page
 	local start_index
 	local end_index
+	local padding_lines
 
 	tput civis
 
@@ -117,7 +118,14 @@ function jump_to_parent_dir() {
 		parent_dirs+=("$current_dir")
 		current_dir=$(dirname "$current_dir")
 	done
-	parent_dirs+=("/") # Include root.
+
+	parent_dirs+=("/") # Add root.
+
+	# Check if we are at the root.
+	if [[ "${#parent_dirs[@]}" -eq 1 && "${parent_dirs[0]}" == "/" ]]; then
+		echo -e "${BOLD}${ORANGE}No Parent Directories.${RESET}"
+		return 1
+	fi
 
 	total_parents=${#parent_dirs[@]}
 	last_page=$(((total_parents + max_per_page - 1) / max_per_page))
@@ -140,7 +148,7 @@ function jump_to_parent_dir() {
 		add_space $padding_lines
 
 		tput sc
-		echo -e "${CYAN}Shunpo <Jump to Parent>${RESET}"
+		echo -e "${BOLD}${CYAN}Shunpo <Jump to Parent>${RESET}"
 
 		# Display the current page of parent directories.
 		for ((i = start_index; i < end_index; i++)); do
@@ -172,17 +180,17 @@ function jump_to_parent_dir() {
 				tput cnorm
 				cd "${parent_dirs[$selected_index]}" || exit
 				echo -e "${GREEN}${BOLD}Changed to:${RESET} ${parent_dirs[$selected_index]}"
-				return
+				return 0
 			fi
 		else
 			clear_output
 			tput cnorm
-			return
+			return 0
 		fi
 	done
 	clear_output
 	tput cnorm
-	return
+	return 0
 }
 
 function jump_to_child_dir() {
@@ -193,21 +201,52 @@ function jump_to_child_dir() {
 	local start_index
 	local end_index
 	local child_dirs=()
+	local cache_index
 	local selected_path="$current_dir" # selected path gets updated in each iteration.
 	local start_dir=$(realpath "$current_dir")
 	local is_start_dir=1
 	local total_child_dirs
+	local padding_lines
 
 	tput civis
 
+	# Cache previously traversed directories.
+	local cache_keys=()
+	local cache_values=()
+
+	function is_cached() {
+		local path="$1"
+		for i in "${!cache_keys[@]}"; do
+			if [[ "${cache_keys[$i]}" == "$path" ]]; then
+				echo "$i"
+				return 0
+			fi
+		done
+		return 1
+	}
+
 	while true; do
-		# Collect immediate child directories of the current selected path.
-		child_dirs=()
-		while IFS= read -r dir; do
-			child_dirs+=("$dir")
-		done < <(find "$selected_path" -maxdepth 1 -mindepth 1 -type d | sort)
+		# Attempt to retrieve from cache.
+		if cache_index=$(is_cached "$selected_path"); then
+			# Use cached value.
+			IFS='|' read -r -a child_dirs <<<"${cache_values[$cache_index]}"
+		else
+			# Collect directories if not cached.
+			child_dirs=()
+			while IFS= read -r dir; do
+				child_dirs+=("$dir")
+			done < <(find "$selected_path" -maxdepth 1 -mindepth 1 -type d | sort)
+
+			# Add to cache.
+			cache_keys+=("$selected_path")
+			cache_values+=("$(
+				IFS='|'
+				echo "${child_dirs[*]}"
+			)")
+		fi
 		total_child_dirs=${#child_dirs[@]}
 
+		# Determine index range to diplay.
 		start_index=$((current_page * max_per_page))
 		end_index=$((start_index + max_per_page))
 		if [ "$end_index" -gt "$total_child_dirs" ]; then
@@ -226,8 +265,12 @@ function jump_to_child_dir() {
 		add_space $padding_lines
 
 		tput sc
-		echo -e "${CYAN}Shunpo <Jump to Child>${RESET}"
-		echo -e "Selected Path: ${BOLD}${CYAN}$selected_path${RESET}"
+		echo -e "${BOLD}${CYAN}Shunpo <Jump to Child>${RESET}"
+		if [[ $is_start_dir -eq 1 ]]; then
+			echo -e "Selected Path: ${CYAN}$selected_path${RESET} ${ORANGE}(Initial)${RESET}"
+		else
+			echo -e "Selected Path: ${CYAN}$selected_path${RESET}"
+		fi
 
 		if [[ "$total_child_dirs" -eq 0 ]]; then
 			if [[ $is_start_dir -eq 1 ]]; then
@@ -249,23 +292,28 @@ function jump_to_child_dir() {
 			fi
 		fi
 
+		# Process input.
 		read -rsn1 input
 		if [[ "$input" == "n" ]]; then
 			if [ $((current_page + 1)) -lt "$last_page" ]; then
 				current_page=$((current_page + 1))
 			fi
 			clear_output
+
 		elif [[ "$input" == "p" ]]; then
 			if [ $((current_page - 1)) -ge 0 ]; then
 				current_page=$((current_page - 1))
 			fi
 			clear_output
+
 		elif [[ "$input" = "b" ]]; then
 			if [[ $is_start_dir -eq 1 ]]; then
 				clear_output
-				return 0
+				continue
+			else
+				selected_path=$(realpath "$selected_path/../")
 			fi
-			selected_path=$(realpath "$selected_path/../")
+
 			if [[ "$selected_path" == "$start_dir" ]]; then
 				is_start_dir=1
 			else
@@ -276,9 +324,13 @@ function jump_to_child_dir() {
 
 		elif [[ "$input" == "" ]]; then
 			clear_output
-			cd "$selected_path" || exit
-			echo -e "${GREEN}${BOLD}Changed to:${RESET} $selected_path"
+			if [[ $is_start_dir -ne 1 ]]; then
+				cd "$selected_path" || exit
+				${CYAN}$selected_path${RESET}
+				echo -e "${GREEN}${BOLD}Changed to:${RESET} $selected_path"
+			fi
 			break
+
 		elif [[ "$input" =~ ^[0-9]+$ ]] && [[ "$input" -ge 0 ]] && [[ "$input" -lt $max_per_page ]]; then
 			selected_index=$((start_index + input))
 			if [[ "$selected_index" -lt "$total_child_dirs" ]]; then
@@ -287,7 +339,7 @@ function jump_to_child_dir() {
 				current_page=0
 			fi
 			clear_output
-			tput cnorm
+
 		else
 			clear_output
 			tput cnorm
@@ -305,19 +357,20 @@ function add_space() {
 	total_lines=$(tput lines)
 
 	# Fetch the current cursor row position using ANSI escape codes.
-	cursor_line=$(IFS=';' read -sdR -p $'\033[6n' -a pos && echo "${pos[0]#*[}")
+	cursor_line=$(IFS=';' read -rsdR -p $'\033[6n' -a pos && echo "${pos[0]#*[}")
 
 	# Calculate lines from current position to bottom.
 	lines_to_bottom=$((total_lines - cursor_line))
 
 	# If not enough lines, add extra lines.
-	if [ "$lines_to_bottom" -lt $1 ]; then
+	if [ "$lines_to_bottom" -lt "$1" ]; then
 		extra_lines=$(($1 - lines_to_bottom))
 		for ((i = 0; i < extra_lines; i++)); do
 			echo
 		done
-		tput cuu $1
+		tput cuu "$1"
 	fi
+	tput ed
 }
 
 function clear_output() {
@@ -328,7 +381,7 @@ function clear_output() {
 function assert_bookmarks_exist() {
 	# Ensure the bookmarks file exists and is not empty.
 	if [ ! -f "$BOOKMARKS_FILE" ] || [ ! -s "$BOOKMARKS_FILE" ]; then
-		echo -e "${CYAN}${BOLD}No Bookmarks Found.${RESET}"
+		echo -e "${ORANGE}${BOLD}No Bookmarks Found.${RESET}"
 		cleanup
 		return 1
 	fi
@@ -337,17 +390,19 @@ function assert_bookmarks_exist() {
 function cleanup() {
 	# Clean up to avoid namespace pollution.
 	unset BOOKMARKS_FILE
+	unset IFS
 	unset selected_dir
 	unset selected_bookmark_index
-	unset interact_bookmarks
-	unset add_space
-	unset clear_output
-	unset assert_bookmarks_exist
-	unset jump_to_parent_dir
-	unset jump_to_child_dir
-	unset handle_kill
+	unset -f interact_bookmarks
+	unset -f add_space
+	unset -f clear_output
+	unset -f assert_bookmarks_exist
+	unset -f jump_to_parent_dir
+	unset -f jump_to_child_dir
+	unset -f is_cached
+	unset -f handle_kill
+	unset -f cleanup
 	tput cnorm
 	stty echo
 	trap - SIGINT
-	unset cleanup
 }
