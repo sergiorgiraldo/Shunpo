@@ -326,7 +326,6 @@ function jump_to_child_dir() {
 			clear_output
 			if [[ $is_start_dir -ne 1 ]]; then
 				cd "$selected_path" || exit
-				${CYAN}$selected_path${RESET}
 				echo -e "${GREEN}${BOLD}Changed to:${RESET} $selected_path"
 			fi
 			break
