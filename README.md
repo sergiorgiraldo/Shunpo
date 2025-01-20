@@ -1,18 +1,14 @@
 <div align="center">
-  <img 
-    src="https://github.com/user-attachments/assets/fbdf0831-0d6a-495d-bdbf-c0aaa28bff6c" 
-    alt="Logo" 
-    width="400"
-    style="
-      filter: invert(0%);
-    ">
-  <p style="font-size: 100px;"><i>Speedy navigation with minimal mental overhead.</i></p>
+  <picture>
+    <source srcset="logos/shunpo_logo.png" media="(prefers-color-scheme: dark)">
+    <img src="logos/shunpo_logo_inverted.png" alt="Logo" width="550" style="margin: 0; padding: 0;">
+  </picture>
+  <h3><i>Speedy navigation with minimal mental overhead.</i></h3>
 </div>
 
-
 ----
-Shunpo is a minimalist bash tool that tries to make directory navigation in terminal just a little bit faster.
-If you frequently use commands like `cd`, `pushd`, `popd`, Shunpo might make your life easier by providing a simple bookmarking system and jump to nearby directories with fewer keystrokes.
+Shunpo is a minimalist bash tool that tries to make directory navigation in terminal just a little bit faster by providing a simple system to manage bookmarks and jump to directories in only a few keystrokes.
+If you frequently need to use commands like `cd`, `pushd`, or `popd`, Shunpo is for you.
 
 Requirements
 ----
