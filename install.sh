@@ -1,7 +1,7 @@
 #!/bin/bash
 
-read -p "Enter the installation directory [default: $HOME/Shunpo]: " user_input
-INSTALL_DIR=${user_input:-"$HOME/Shunpo"}
+read -p "Enter the installation directory [default: $HOME/.shunpo]: " user_input
+INSTALL_DIR=${user_input:-"$HOME/.shunpo"}
 BASHRC="$HOME/.bashrc"
 SHUNPORC="$HOME/.shunporc"
 
