@@ -16,6 +16,7 @@ setup() {
 add_aliases() {
 	aliases=(
 		"sj:source $(realpath $INSTALL_DIR/jump_to_parent.sh)"
+		"sd:source $(realpath $INSTALL_DIR/jump_to_child.sh)"
 		"sb:$(realpath $INSTALL_DIR/add_bookmark.sh)"
 		"sr:$(realpath $INSTALL_DIR/remove_bookmark.sh)"
 		"sg:source $(realpath $INSTALL_DIR/go_to_bookmark.sh)"

@@ -21,11 +21,13 @@ uninstall() {
 	else
 		cd $SHUNPO_DIR
 		rm jump_to_parent.sh
+		rm jump_to_child.sh
 		rm add_bookmark.sh
 		rm remove_bookmark.sh
 		rm go_to_bookmark.sh
 		rm list_bookmarks.sh
 		rm clear_bookmarks.sh
+        rm functions.sh
         rm colors.sh
 		cd ..
 		rmdir $SHUNPO_DIR
