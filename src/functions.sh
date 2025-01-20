@@ -45,13 +45,15 @@ function interact_bookmarks() {
 		else
 			padding_lines=$total_bookmarks
 		fi
-		padding_lines=$((padding_lines + 2))
+
+		if [ $last_page -gt 1 ]; then
+			padding_lines=$((padding_lines + 1)) # page numbers.
+		fi
+
+		padding_lines=$((padding_lines + 1)) # header.
 		add_space $padding_lines
 
-		# Save cursor position.
 		tput sc
-
-		# Print header.
 		echo -e "${BOLD}${CYAN}Shunpo <$1>${RESET}"
 
 		# Display bookmarks for the current page.
@@ -144,7 +146,12 @@ function jump_to_parent_dir() {
 		else
 			padding_lines=$total_parents
 		fi
-		padding_lines=$((padding_lines + 2))
+
+		if [ $last_page -gt 1 ]; then
+			padding_lines=$((padding_lines + 1)) # page numbers.
+		fi
+
+		padding_lines=$((padding_lines + 1)) # header.
 		add_space $padding_lines
 
 		tput sc
@@ -261,11 +268,18 @@ function jump_to_child_dir() {
 		else
 			padding_lines=$total_child_dirs
 		fi
-		padding_lines=$((padding_lines + 3))
+
+		if [ $last_page -gt 1 ]; then
+			padding_lines=$((padding_lines + 1)) # page numbers.
+		fi
+
+		padding_lines=$((padding_lines + 2)) # header and selected path.
 		add_space $padding_lines
 
 		tput sc
 		echo -e "${BOLD}${CYAN}Shunpo <Jump to Child>${RESET}"
+
+		# Print selected path and options.
 		if [[ $is_start_dir -eq 1 ]]; then
 			echo -e "Selected Path: ${CYAN}$selected_path${RESET} ${ORANGE}(Initial)${RESET}"
 		else
@@ -360,11 +374,8 @@ function add_space() {
 
 	# Calculate lines from current position to bottom.
 	lines_to_bottom=$((total_lines - cursor_line))
-
-	# If not enough lines, add extra lines.
 	if [ "$lines_to_bottom" -lt "$1" ]; then
-		extra_lines=$(($1 - lines_to_bottom))
-		for ((i = 0; i < extra_lines; i++)); do
+		for ((i = 0; i < $1; i++)); do
 			echo
 		done
 		tput cuu "$1"
