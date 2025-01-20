@@ -32,11 +32,11 @@ elif [[ -d $selected_dir ]]; then
 	if cd "$selected_dir"; then
 		echo -e "${GREEN}${BOLD}Changed to:${RESET} $selected_dir"
 	else
-		echo -e "${RED}${BOLD}Failed to find directory:${RESET} $selected_dir"
+		echo -e "${RED}${BOLD}Directory does not exist:${RESET} $selected_dir"
 	fi
 
 else
-	echo -e "${RED}${BOLD}Directory no longer exists:${RESET} $selected_dir"
+	echo -e "${RED}${BOLD}Directory does not exist:${RESET} $selected_dir"
 fi
 
 cleanup
