@@ -2,11 +2,11 @@
 
 # Imports.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source $SCRIPT_DIR/colors.sh
-source $SCRIPT_DIR/functions.sh
+source "$SCRIPT_DIR"/colors.sh
+source "$SCRIPT_DIR"/functions.sh
 
 # File to store bookmarks.
-MAX_BOOKMARKS=10
+MAX_BOOKMARKS=128
 
 # Ensure the bookmarks file exists and is not empty
 if [ ! -f "$BOOKMARKS_FILE" ]; then
@@ -23,8 +23,8 @@ if [ "$current_bookmarks" -ge "$MAX_BOOKMARKS" ]; then
 fi
 
 # Save the current directory to the bookmarks file.
-current_dir=$(pwd)
-if ! grep -Fxq "$current_dir" "$BOOKMARKS_FILE"; then
+current_dir=$(realpath "$PWD")
+if ! grep -q -x "$(printf '%s\n' "$current_dir")" "$BOOKMARKS_FILE"; then
 	echo "$current_dir" >>"$BOOKMARKS_FILE"
 	echo -e "${GREEN}${BOLD}Bookmark added:${RESET} $current_dir"
 else

@@ -2,24 +2,36 @@
 
 # Colors and formatting.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source $SCRIPT_DIR/colors.sh
-source $SCRIPT_DIR/functions.sh
+source "$SCRIPT_DIR/colors.sh"
+source "$SCRIPT_DIR/functions.sh"
 
-assert_bookmarks_exist
-show_bookmarks "Remove Bookmarks"
+function handle_kill() {
+	clear_output
+	cleanup
+	exit 1
+}
 
-# Validate input and handle bookmark removal.
-read -rsn1 input
-if [[ "$input" =~ ^[0-9]+$ ]] && [ "$input" -ge 0 ] && [ "$input" -lt "${#bookmarks[@]}" ]; then
-	# Get the selected bookmark to remove.
-	selected_index=$((10#$input))
-	selected_dir="${bookmarks[$selected_index]}"
+trap 'handle_kill' SIGINT
 
+# Check if bookmarks exist.
+if ! assert_bookmarks_exist; then
+	exit 1
+fi
+
+interact_bookmarks "Remove Bookmarks"
+
+bookmarks=()
+while IFS= read -r bookmark; do
+	bookmarks+=("$bookmark")
+done <"$BOOKMARKS_FILE"
+
+if [[ -z $selected_dir ]]; then
+	unset selected_dir
+	exit 1
+
+elif [[ "$selected_bookmark_index" -ge 0 ]] && [[ "$selected_bookmark_index" -lt "${#bookmarks[@]}" ]]; then
 	# Remove the selected bookmark from the file.
 	awk -v dir="$selected_dir" '$0 != dir' "$BOOKMARKS_FILE" >"${BOOKMARKS_FILE}.tmp" && mv "${BOOKMARKS_FILE}.tmp" "$BOOKMARKS_FILE"
-
-	# Clear the show_bookmarks output.
-	clear_output
 
 	# Display the removed bookmark message.
 	echo -e "${RED}${BOLD}Removed bookmark:${RESET} $selected_dir"
@@ -29,5 +41,7 @@ if [[ "$input" =~ ^[0-9]+$ ]] && [ "$input" -ge 0 ] && [ "$input" -lt "${#bookma
 		rm -f "$BOOKMARKS_FILE"
 	fi
 else
-	clear_output
+	exit 1
 fi
+
+cleanup
