@@ -9,7 +9,7 @@ function interact_bookmarks() {
 	local current_page=0
 	local max_per_page=10
 	local last_page
-    local start_index
+	local start_index
 	local end_index
 	local middle_row
 	local padding_lines
@@ -230,9 +230,13 @@ function jump_to_child_dir() {
 		echo -e "Selected Path: ${BOLD}${CYAN}$selected_path${RESET}"
 
 		if [[ "$total_child_dirs" -eq 0 ]]; then
-			echo -e "${BOLD}${ORANGE}No Child Directories.${RESET}"
 			if [[ $is_start_dir -eq 1 ]]; then
+				clear_output
+				echo -e "${BOLD}${ORANGE}No Child Directories.${RESET}"
+				tput cnorm
 				return 1
+			else
+				echo -e "${BOLD}${ORANGE}No Child Directories.${RESET}"
 			fi
 		else
 			# Print child directories.
