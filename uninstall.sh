@@ -4,7 +4,7 @@ BASHRC="$HOME/.bashrc"
 source $BASHRC
 
 uninstall() {
-    echo "Uninstalling..."
+	echo "Uninstalling..."
 	if [ -f "$HOME/.shunporc" ]; then
 		rm $HOME/.shunporc
 		echo "Removed $HOME/.shunporc"
@@ -27,8 +27,8 @@ uninstall() {
 		rm go_to_bookmark.sh
 		rm list_bookmarks.sh
 		rm clear_bookmarks.sh
-        rm functions.sh
-        rm colors.sh
+		rm functions.sh
+		rm colors.sh
 		cd ..
 		rmdir $SHUNPO_DIR
 		echo "Removed $SHUNPO_DIR"
