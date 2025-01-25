@@ -28,6 +28,24 @@ function interact_bookmarks() {
 		return 0
 	fi
 
+	# If a selection is specified, select it.
+	if [ -n "$2" ]; then
+		if ! [[ "$2" =~ ^[0-9]+$ ]]; then
+			echo -e "${BOLD}${ORANGE}Invalid Bookmark Selection.${RESET}"
+			return 1
+		else
+			if [[ $2 -lt $total_bookmarks ]]; then
+				selected_dir="${bookmarks[$2]}"
+				tput cnorm
+				return 0
+			else
+				tput cnorm
+				echo -e "${BOLD}${ORANGE}Bookmark is Empty.${RESET}"
+				return 2
+			fi
+		fi
+	fi
+
 	last_page=$(((total_bookmarks + max_per_page - 1) / max_per_page))
 
 	# Pagination loop.
@@ -130,6 +148,26 @@ function jump_to_parent_dir() {
 	fi
 
 	total_parents=${#parent_dirs[@]}
+
+	# If a selection is specified, select it.
+	if [ -n "$1" ]; then
+		if ! [[ "$1" =~ ^[0-9]+$ ]]; then
+			echo -e "${BOLD}${ORANGE}Invalid Parent Selection.${RESET}"
+			return 1
+		else
+			if [[ "$1" -lt "$total_parents" ]]; then
+				cd "${parent_dirs[$1]}" || exit
+				tput cnorm
+				echo -e "${GREEN}${BOLD}Changed to:${RESET} ${parent_dirs[$1]}"
+				return 0
+			else
+				tput cnorm
+				echo -e "${BOLD}${ORANGE}Invalid Parent Selection.${RESET}"
+				return 2
+			fi
+		fi
+	fi
+
 	last_page=$(((total_parents + max_per_page - 1) / max_per_page))
 
 	while true; do
@@ -188,6 +226,8 @@ function jump_to_parent_dir() {
 				cd "${parent_dirs[$selected_index]}" || exit
 				echo -e "${GREEN}${BOLD}Changed to:${RESET} ${parent_dirs[$selected_index]}"
 				return 0
+			else
+				clear_output
 			fi
 		else
 			clear_output
