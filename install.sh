@@ -44,7 +44,7 @@ install() {
 	echo "$source_rc_line" >>"$BASHRC"
 	echo "Added: $source_rc_line"
 
-    # record SHUNPO_DIR for uninstallation.
+	# record SHUNPO_DIR for uninstallation.
 	install_dir_line="export SHUNPO_DIR=$INSTALL_DIR" >>"$BASHRC$"
 	temp_file=$(mktemp)
 	grep -v '^export SHUNPO_DIR=' "$BASHRC" >"$temp_file"
