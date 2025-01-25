@@ -14,14 +14,16 @@ setup() {
 }
 
 add_commands() {
+    INSTALL_DIR="$(realpath "$INSTALL_DIR")"
+
     functions=(
-        'sj() { source "$(realpath $INSTALL_DIR/jump_to_parent.sh)"; }'
-        'sd() { source "$(realpath $INSTALL_DIR/jump_to_child.sh)"; }'
-        'sb() { "$(realpath $INSTALL_DIR/add_bookmark.sh)" "$@"; }'
-        'sr() { "$(realpath $INSTALL_DIR/remove_bookmark.sh)" "$@"; }'
-        'sg() { source "$(realpath $INSTALL_DIR/go_to_bookmark.sh)"; }'
-        'sl() { "$(realpath $INSTALL_DIR/list_bookmarks.sh)"; }'
-        'sc() { "$(realpath $INSTALL_DIR/clear_bookmarks.sh)"; }'
+        "sj() { source \"$INSTALL_DIR/jump_to_parent.sh\"; }"
+        "sd() { source \"$INSTALL_DIR/jump_to_child.sh\"; }"
+        "sb() { \"$INSTALL_DIR/add_bookmark.sh\" \"\$@\"; }"
+        "sr() { \"$INSTALL_DIR/remove_bookmark.sh\" \"\$@\"; }"
+        "sg() { source \"$INSTALL_DIR/go_to_bookmark.sh\"; }"
+        "sl() { \"$INSTALL_DIR/list_bookmarks.sh\"; }"
+        "sc() { \"$INSTALL_DIR/clear_bookmarks.sh\"; }"
     )
 
     for func_definition in "${functions[@]}"; do
