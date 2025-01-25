@@ -26,13 +26,13 @@ Commands
 ----
 #### Bookmarking:
 `sb`: Add the current directory to bookmarks.  
-`sg`: Go to a bookmark.  
-`sr`: Remove a bookmark.  
+`sg`, `sg [#]` : Go to a bookmark.  
+`sr`, `sr [#]` : Remove a bookmark.  
 `sl`: List all bookmarks.  
 `sc`: Clear all bookmarks.   
 
 #### Navigation:
-`sj`: "Jump" up to a parent directory.  
+`sj`, `sj [#]`: "Jump" up to a parent directory.  
 `sd`: "Dive" down to a child directory.
 
 #### Selection:
