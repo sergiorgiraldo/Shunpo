@@ -18,7 +18,12 @@ if ! assert_bookmarks_exist; then
 	exit 1
 fi
 
-interact_bookmarks "Remove Bookmarks"
+interact_bookmarks "Remove Bookmarks" $1
+
+# Handle case where bookmark is not set. Corresponds to return code 2.
+if [ $? -eq 2 ]; then
+	exit 1
+fi
 
 bookmarks=()
 while IFS= read -r bookmark; do

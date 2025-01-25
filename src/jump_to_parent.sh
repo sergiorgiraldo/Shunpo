@@ -16,7 +16,7 @@ function handle_kill() {
 
 trap 'handle_kill; return 1' SIGINT
 
-jump_to_parent_dir
+jump_to_parent_dir $1
 if declare -f cleanup >/dev/null; then
 	cleanup
 fi

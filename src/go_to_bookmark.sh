@@ -7,7 +7,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR"/colors.sh
 source "$SCRIPT_DIR"/functions.sh
 
-
 function handle_kill() {
 	clear_output
 	if declare -f cleanup >/dev/null; then
@@ -22,7 +21,13 @@ if ! assert_bookmarks_exist; then
 	return 1
 fi
 
-interact_bookmarks "Go To Bookmark"
+interact_bookmarks "Go To Bookmark" "$1"
+
+# Handle case where bookmark is not set.
+if [ $? -eq 2 ]; then
+	return 1
+fi
+
 if [[ -z $selected_dir ]]; then
 	if declare -f cleanup >/dev/null; then
 		cleanup
