@@ -25,6 +25,10 @@ interact_bookmarks "Go To Bookmark" "$1"
 
 # Handle case where bookmark is not set.
 if [ $? -eq 2 ]; then
+	if declare -f cleanup >/dev/null; then
+		cleanup
+	fi
+	echo -e "${BOLD}${ORANGE}Bookmark is Empty.${RESET}"
 	return 1
 fi
 
