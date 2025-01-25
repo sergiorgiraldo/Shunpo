@@ -40,7 +40,6 @@ function interact_bookmarks() {
 				return 0
 			else
 				tput cnorm
-				echo -e "${BOLD}${ORANGE}Bookmark is Empty.${RESET}"
 				return 2
 			fi
 		fi
@@ -162,7 +161,6 @@ function jump_to_parent_dir() {
 				return 0
 			else
 				tput cnorm
-				echo -e "${BOLD}${ORANGE}Invalid Parent Selection.${RESET}"
 				return 2
 			fi
 		fi

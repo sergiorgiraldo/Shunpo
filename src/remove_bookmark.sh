@@ -22,6 +22,10 @@ interact_bookmarks "Remove Bookmarks" $1
 
 # Handle case where bookmark is not set. Corresponds to return code 2.
 if [ $? -eq 2 ]; then
+	if declare -f cleanup >/dev/null; then
+		cleanup
+	fi
+	echo -e "${BOLD}${ORANGE}Bookmark is Empty.${RESET}"
 	exit 1
 fi
 

@@ -17,6 +17,16 @@ function handle_kill() {
 trap 'handle_kill; return 1' SIGINT
 
 jump_to_parent_dir $1
+
+# Handle case where bookmark is not set.
+if [ $? -eq 2 ]; then
+	if declare -f cleanup >/dev/null; then
+		cleanup
+	fi
+	echo -e "${BOLD}${ORANGE}Invalid Parent Selection.${RESET}"
+	return 1
+fi
+
 if declare -f cleanup >/dev/null; then
 	cleanup
 fi
