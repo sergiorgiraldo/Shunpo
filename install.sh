@@ -13,23 +13,20 @@ setup() {
     touch $SHUNPORC
 }
 
-add_aliases() {
-    aliases=(
-        "sj:source $(realpath $INSTALL_DIR/jump_to_parent.sh)"
-        "sd:source $(realpath $INSTALL_DIR/jump_to_child.sh)"
-        "sb:$(realpath $INSTALL_DIR/add_bookmark.sh)"
-        "sr:$(realpath $INSTALL_DIR/remove_bookmark.sh)"
-        "sg:source $(realpath $INSTALL_DIR/go_to_bookmark.sh)"
-        "sl:$(realpath $INSTALL_DIR/list_bookmarks.sh)"
-        "sc:$(realpath $INSTALL_DIR/clear_bookmarks.sh)"
+add_commands() {
+    functions=(
+        'sj() { source "$(realpath $INSTALL_DIR/jump_to_parent.sh)"; }'
+        'sd() { source "$(realpath $INSTALL_DIR/jump_to_child.sh)"; }'
+        'sb() { "$(realpath $INSTALL_DIR/add_bookmark.sh)" "$@"; }'
+        'sr() { "$(realpath $INSTALL_DIR/remove_bookmark.sh)" "$@"; }'
+        'sg() { source "$(realpath $INSTALL_DIR/go_to_bookmark.sh)"; }'
+        'sl() { "$(realpath $INSTALL_DIR/list_bookmarks.sh)"; }'
+        'sc() { "$(realpath $INSTALL_DIR/clear_bookmarks.sh)"; }'
     )
-    for alias_pair in "${aliases[@]}"; do
-        alias_name="${alias_pair%%:*}"
-        alias_command="${alias_pair#*:}"
-        alias_line="alias $alias_name='$alias_command'"
 
-        echo "$alias_line" >>"$SHUNPORC"
-        echo "Added: $alias_line"
+    for func_definition in "${functions[@]}"; do
+        echo "$func_definition" >>"$SHUNPORC"
+        echo "Created Command: ${func_definition%%()*}"
     done
 }
 
@@ -42,7 +39,7 @@ install() {
     sed '/^source.*\.shunporc/d' "$BASHRC" >"$temp_file"
     mv "$temp_file" "$BASHRC"
     echo "$source_rc_line" >>"$BASHRC"
-    echo "Added: $source_rc_line"
+    echo "Added to BASHRC: $source_rc_line"
 
     # record SHUNPO_DIR for uninstallation.
     install_dir_line="export SHUNPO_DIR=$INSTALL_DIR" >>"$BASHRC$"
@@ -50,9 +47,9 @@ install() {
     grep -v '^export SHUNPO_DIR=' "$BASHRC" >"$temp_file"
     mv "$temp_file" "$BASHRC"
     echo "$install_dir_line" >>"$BASHRC"
-    echo "Added: $install_dir_line"
+    echo "Added to BASHRC: $install_dir_line"
 
-    add_aliases
+    add_commands
 }
 
 # Install.
