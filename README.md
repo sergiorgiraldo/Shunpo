@@ -25,7 +25,7 @@ Run `install.sh && source ~/.bashrc`.
 
 Tutorial
 ----
-Click [here](https://www.youtube.com/watch?v=gaEYkoFPwK4) for a video tutorial.
+Click [here](https://www.youtube.com/watch?v=TN66A3MPo50) for a video tutorial.
 
 Commands
 ----
