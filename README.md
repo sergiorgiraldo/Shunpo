@@ -10,7 +10,8 @@
 Shunpo is a minimalist bash tool that tries to make directory navigation in terminal just a little bit faster by providing a simple system to manage bookmarks and jump to directories with only a few keystrokes.
 If you frequently need to use commands like `cd`, `pushd`, or `popd`, Shunpo is for you.  
 
-![Bash](https://img.shields.io/badge/Bash-%23121011.svg?logo=gnu-bash&logoColor=white) ![Made with Love](https://img.shields.io/badge/Made%20with-%E2%9D%A4-red) ![Powered by 🍵](https://img.shields.io/badge/Powered%20by-%F0%9F%8D%B5-green)  ![shfmt](https://github.com/egurapha/Shunpo/actions/workflows/code_formatting.yml/badge.svg)  
+![Powered by 🍵](https://img.shields.io/badge/Powered%20by-%F0%9F%8D%B5-green)  [![Ko-fi](https://img.shields.io/badge/Ko--fi-Buy%20me%20Tea-ff5f5f?logo=kofi&style=flat-square)](https://ko-fi.com/egurapha)
+![shfmt](https://github.com/egurapha/Shunpo/actions/workflows/code_formatting.yml/badge.svg)  
 
 Requirements
 ----
