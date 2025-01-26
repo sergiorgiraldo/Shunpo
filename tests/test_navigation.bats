@@ -29,14 +29,14 @@ teardown() {
     cd ${SHUNPO_TEST_DIR}/1/2/3/4.2
 
     # Check expected success and failures.
-    run sj 2 >/dev/null && assert_success
+    run sj 1 >/dev/null && assert_success
     run sj -3 >/dev/null && assert_failure
     run sj "b" >/dev/null && assert_failure
 
     # Check that post-jump directories are correct.
-    sj 2 >/dev/null
-    assert_equal $(pwd) "${SHUNPO_TEST_DIR}/1/2"
+    sj 1 >/dev/null
+    assert_equal $(pwd) "${SHUNPO_TEST_DIR}/1/2/3"
 
-    sg 3 >/dev/null && sj 3 >/dev/null
-    assert_equal $(pwd) "${SHUNPO_TEST_DIR}"
+    sg 2 >/dev/null
+    assert_equal $(pwd) "${SHUNPO_TEST_DIR}/1/2"
 }
