@@ -24,8 +24,8 @@ jobs:
 
       - name: Success.
         if: success()
-        run: echo "Code Formatting Passed."
+        run: echo "Unit Testing Passed."
 
       - name: Failure.
         if: failure()
-        run: echo "Code Formatting Failed."
+        run: echo "Unit Testing Failed."

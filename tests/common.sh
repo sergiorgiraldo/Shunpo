@@ -31,7 +31,7 @@ make_directories() {
     local width=3
     for i in $(seq 1 $depth); do
         if [[ $1 -eq 1 ]]; then
-            sb >/dev/null
+            run sb >/dev/null
         fi
         mkdir -p "$i"
         if [[ $i -ne 1 ]]; then
@@ -41,4 +41,8 @@ make_directories() {
         fi
         cd "$i"
     done
+}
+
+get_num_bookmarks() {
+    echo $(wc -l <${SHUNPO_TEST_DIR}/home/.shunpo_bookmarks | tr -d '[:space:]')
 }
