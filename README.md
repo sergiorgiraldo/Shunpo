@@ -25,7 +25,8 @@ Run `install.sh && source ~/.bashrc`.
 
 Tutorial
 ----
-Click [here](https://www.youtube.com/watch?v=TN66A3MPo50) for a video tutorial.
+Click [here](https://www.youtube.com/watch?v=TN66A3MPo50) for a video tutorial.  
+<img src="assets/shunpo_demo.gif" width="600" height="auto" alt="Shunpo Demo">
 
 Commands
 ----
