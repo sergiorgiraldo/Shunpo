@@ -19,7 +19,13 @@ trap 'handle_kill; return 1' SIGINT
 jump_to_parent_dir $1
 
 # Handle case where bookmark is not set.
-if [ $? -eq 2 ]; then
+if [ $? -eq 1 ]; then
+
+    if declare -f cleanup >/dev/null; then
+        cleanup
+    fi
+    return 1
+elif [ $? -eq 2 ]; then
     if declare -f cleanup >/dev/null; then
         cleanup
     fi
