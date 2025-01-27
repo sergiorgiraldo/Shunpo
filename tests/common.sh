@@ -9,6 +9,8 @@ fi
 function setup_env {
     HOME=${SHUNPO_TEST_DIR}/home
     mkdir -p $HOME
+    XDG_DATA_HOME=${SHUNPO_TEST_DIR}
+    mkdir -p $XDG_DATA_HOME
 }
 
 function cleanup_env {
@@ -44,5 +46,5 @@ make_directories() {
 }
 
 get_num_bookmarks() {
-    echo $(wc -l <${SHUNPO_TEST_DIR}/home/.shunpo_bookmarks | tr -d '[:space:]')
+    echo $(wc -l <${SHUNPO_DIR}/.shunpo_bookmarks | tr -d '[:space:]')
 }
