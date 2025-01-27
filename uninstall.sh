@@ -5,14 +5,16 @@ source $BASHRC
 
 uninstall() {
     echo "Uninstalling..."
-    if [ -f "$HOME/.shunporc" ]; then
-        rm $HOME/.shunporc
-        echo "Removed $HOME/.shunporc"
+    SHUNPO_CMD="$SHUNPO_DIR/shunpo_cmd"
+    if [ -f "$SHUNPO_CMD" ]; then
+        rm "$SHUNPO_CMD"
+        echo "Removed $SHUNPO_CMD"
     fi
 
-    if [ -f "$HOME/.shunpo_bookmarks" ]; then
-        rm $HOME/.shunpo_bookmarks
-        echo "Removed $HOME/.shunpo_bookmarks"
+    SHUNPO_BOOKMARKS_FILE="$SHUNPO_DIR/.shunpo_bookmarks"
+    if [ -f $SHUNPO_BOOKMARKS_FILE ]; then
+        rm $SHUNPO_BOOKMARKS_FILE
+        echo "Removed $SHUNPO_BOOKMARKS_FILE"
     fi
 
     if [ -z "$SHUNPO_DIR" ]; then
@@ -36,7 +38,7 @@ uninstall() {
     fi
 
     temp_file=$(mktemp)
-    sed '/^source.*\.shunporc/d' "$BASHRC" >"$temp_file"
+    sed '/^source.*\shunpo_cmd/d' "$BASHRC" >"$temp_file"
     mv "$temp_file" "$BASHRC"
 
     temp_file=$(mktemp)

@@ -1,16 +1,18 @@
 #!/bin/bash
 
-read -p "Enter the installation directory [default: $HOME/.shunpo]: " user_input
-INSTALL_DIR=${user_input:-"$HOME/.shunpo"}
+DEFAULT_INSTALL_DIR=${XDG_DATA_HOME:-$HOME/.local/share}/shunpo
+read -p "Enter the installation directory [default: $DEFAULT_INSTALL_DIR]: " user_input
+INSTALL_DIR=${user_input:-"$DEFAULT_INSTALL_DIR"}
 BASHRC="$HOME/.bashrc"
-SHUNPORC="$HOME/.shunporc"
+# file containing command definitions:
+SHUNPO_CMD="$INSTALL_DIR/shunpo_cmd"
 
 setup() {
     mkdir -p $INSTALL_DIR
-    if [ -f $SHUNPORC ]; then
-        rm $SHUNPORC
+    if [ -f $SHUNPO_CMD ]; then
+        rm $SHUNPO_CMD
     fi
-    touch $SHUNPORC
+    touch $SHUNPO_CMD
 }
 
 add_commands() {
@@ -27,7 +29,7 @@ add_commands() {
     )
 
     for func_definition in "${functions[@]}"; do
-        echo "$func_definition" >>"$SHUNPORC"
+        echo "$func_definition" >>"$SHUNPO_CMD"
         echo "Created Command: ${func_definition%%()*}"
     done
 }
@@ -36,7 +38,7 @@ install() {
     cp src/* $INSTALL_DIR
 
     # add sourcing for .shunporc
-    source_rc_line="source $SHUNPORC"
+    source_rc_line="source $SHUNPO_CMD"
     temp_file=$(mktemp)
     sed '/^source.*\.shunporc/d' "$BASHRC" >"$temp_file"
     mv "$temp_file" "$BASHRC"

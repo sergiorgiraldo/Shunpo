@@ -12,7 +12,6 @@ setup() {
     printf '\n' | ./install.sh
     working_dir=$(pwd)
     source ${SHUNPO_TEST_DIR}/home/.bashrc
-    source ${SHUNPO_TEST_DIR}/home/.shunporc
     cd ${SHUNPO_TEST_DIR}
 }
 
@@ -23,17 +22,17 @@ teardown() {
 }
 
 @test "Test Install." {
-    [ -e "${SHUNPO_TEST_DIR}.shunporc" ] && assert_success
-    [ "$(echo $SHUNPO_DIR)" = "${SHUNPO_TEST_DIR}.shunpo" ] && assert_success
-    [ -e "${SHUNPO_TEST_DIR}.shunpo/functions.sh" ] && assert_success
-    [ -e "${SHUNPO_TEST_DIR}.shunpo/colors.sh" ] && assert_success
-    [ -e "${SHUNPO_TEST_DIR}.shunpo/add_bookmark.sh" ] && assert_success
-    [ -e "${SHUNPO_TEST_DIR}.shunpo/go_to_bookmark.sh" ] && assert_success
-    [ -e "${SHUNPO_TEST_DIR}.shunpo/remove_bookmark.sh" ] && assert_success
-    [ -e "${SHUNPO_TEST_DIR}.shunpo/list_bookmarks.sh" ] && assert_success
-    [ -e "${SHUNPO_TEST_DIR}.shunpo/clear_bookmarks.sh" ] && assert_success
-    [ -e "${SHUNPO_TEST_DIR}.shunpo/jump_to_parent.sh" ] && assert_success
-    [ -e "${SHUNPO_TEST_DIR}.shunpo/jump_to_child.sh" ] && assert_success
+    [ -e "${SHUNPO_DIR}/shunpo_cmd" ] && assert_success
+    [ "$(echo $SHUNPO_DIR)" = "${SHUNPO_DIR}" ] && assert_success
+    [ -e "${SHUNPO_DIR}/functions.sh" ] && assert_success
+    [ -e "${SHUNPO_DIR}/colors.sh" ] && assert_success
+    [ -e "${SHUNPO_DIR}/add_bookmark.sh" ] && assert_success
+    [ -e "${SHUNPO_DIR}/go_to_bookmark.sh" ] && assert_success
+    [ -e "${SHUNPO_DIR}/remove_bookmark.sh" ] && assert_success
+    [ -e "${SHUNPO_DIR}/list_bookmarks.sh" ] && assert_success
+    [ -e "${SHUNPO_DIR}/clear_bookmarks.sh" ] && assert_success
+    [ -e "${SHUNPO_DIR}/jump_to_parent.sh" ] && assert_success
+    [ -e "${SHUNPO_DIR}/jump_to_child.sh" ] && assert_success
     run declare -F sb && assert_success
     run declare -F sg && assert_success
     run declare -F sr && assert_success
@@ -53,7 +52,7 @@ teardown() {
     assert_equal "$num_bookmarks" "4"
 
     # Check if bookmark entry is correct.
-    bookmark2=$(sed -n 3p ${SHUNPO_TEST_DIR}/home/.shunpo_bookmarks)
+    bookmark2=$(sed -n 3p ${SHUNPO_DIR}/.shunpo_bookmarks)
     expected_bookmark2="${SHUNPO_TEST_DIR}/1/2"
     assert_equal "$bookmark2" "$expected_bookmark2"
 }
@@ -78,10 +77,10 @@ teardown() {
 @test "Test Remove Bookmark." {
     # Set up directory structure.
     make_directories 1
-    assert [ -f ${SHUNPO_TEST_DIR}/home/.shunpo_bookmarks ]
+    assert [ -f ${SHUNPO_DIR}/.shunpo_bookmarks ]
 
     # Store the last bookmark.
-    bookmark3=$(sed -n 4p ${SHUNPO_TEST_DIR}/home/.shunpo_bookmarks)
+    bookmark3=$(sed -n 4p ${SHUNPO_DIR}/.shunpo_bookmarks)
 
     # Check failure handling.
     run sr -1 >/dev/null && assert_failure
@@ -98,13 +97,13 @@ teardown() {
     assert_equal "$num_bookmarks" "2"
 
     # Check shifting.
-    bookmark1=$(sed -n 2p ${SHUNPO_TEST_DIR}/home/.shunpo_bookmarks)
+    bookmark1=$(sed -n 2p ${SHUNPO_DIR}/.shunpo_bookmarks)
     assert_equal "$bookmark3" "$bookmark1"
 
     # Remove until file is removed.
     run sr 0 && assert_success
     run sr 0 && assert_success
-    refute [ -f ${SHUNPO_TEST_DIR}/home/.shunpo_bookmarks ]
+    refute [ -f ${SHUNPO_DIR}/.shunpo_bookmarks ]
 }
 
 @test "Test Clear Bookmarks." {
@@ -112,9 +111,9 @@ teardown() {
     make_directories 1
 
     # Check that the file exists
-    assert [ -f ${SHUNPO_TEST_DIR}/home/.shunpo_bookmarks ]
+    assert [ -f ${SHUNPO_DIR}/.shunpo_bookmarks ]
 
     # Confirm that the file is removed after clearing.
     run sc && assert_success
-    refute [ -f ${SHUNPO_TEST_DIR}/home/.shunpo_bookmarks ]
+    refute [ -f ${SHUNPO_DIR}/.shunpo_bookmarks ]
 }

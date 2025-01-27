@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Default Bookmarks Path.
-SHUNPO_BOOKMARKS_FILE="$HOME/.shunpo_bookmarks"
+SHUNPO_BOOKMARKS_FILE="$SHUNPO_DIR/.shunpo_bookmarks"
 
 # Function to display bookmarks with pagination.
 function shunpo_interact_bookmarks() {
