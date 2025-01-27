@@ -38,7 +38,7 @@ uninstall() {
     fi
 
     temp_file=$(mktemp)
-    sed '/^source.*\shunpo_cmd/d' "$BASHRC" >"$temp_file"
+    sed '/^source .*\/shunpo_cmd$/d' "$BASHRC" >"$temp_file"
     mv "$temp_file" "$BASHRC"
 
     temp_file=$(mktemp)
