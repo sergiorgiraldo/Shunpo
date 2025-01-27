@@ -3,50 +3,50 @@
 # This script should be sourced and not executed.
 
 # Colors and formatting.
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR"/colors.sh
-source "$SCRIPT_DIR"/functions.sh
+SHUNPO_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SHUNPO_SCRIPT_DIR"/colors.sh
+source "$SHUNPO_SCRIPT_DIR"/functions.sh
 
-function handle_kill() {
-    clear_output
-    if declare -f cleanup >/dev/null; then
-        cleanup
+function shunpo_handle_kill() {
+    shunpo_clear_output
+    if declare -f shunpo_cleanup >/dev/null; then
+        shunpo_cleanup
     fi
     return 1
 }
 
-trap 'handle_kill; return 1' SIGINT
+trap 'shunpo_handle_kill; return 1' SIGINT
 
-if ! assert_bookmarks_exist; then
+if ! shunpo_assert_bookmarks_exist; then
     return 1
 fi
 
-interact_bookmarks "Go To Bookmark" "$1"
+shunpo_interact_bookmarks "Go To Bookmark" "$1"
 
 # Handle case where bookmark is not set.
 if [ $? -eq 2 ]; then
-    if declare -f cleanup >/dev/null; then
-        cleanup
+    if declare -f shunpo_cleanup >/dev/null; then
+        shunpo_cleanup
     fi
-    echo -e "${BOLD}${ORANGE}Bookmark is Empty.${RESET}"
+    echo -e "${SHUNPO_BOLD}${SHUNPO_ORANGE}Bookmark is Empty.${SHUNPO_RESET}"
     return 1
 fi
 
-if [[ -z $selected_dir ]]; then
-    if declare -f cleanup >/dev/null; then
-        cleanup
+if [[ -z $shunpo_selected_dir ]]; then
+    if declare -f shunpo_cleanup >/dev/null; then
+        shunpo_cleanup
     fi
     return 1
 
-elif [[ -d $selected_dir ]]; then
-    if cd "$selected_dir"; then
-        echo -e "${GREEN}${BOLD}Changed to:${RESET} $selected_dir"
+elif [[ -d $shunpo_selected_dir ]]; then
+    if cd "$shunpo_selected_dir"; then
+        echo -e "${SHUNPO_GREEN}${SHUNPO_BOLD}Changed to:${SHUNPO_RESET} $shunpo_selected_dir"
     else
-        echo -e "${RED}${BOLD}Directory does not exist:${RESET} $selected_dir"
+        echo -e "${SHUNPO_RED}${SHUNPO_BOLD}Directory does not exist:${SHUNPO_RESET} $shunpo_selected_dir"
     fi
 
 else
-    echo -e "${RED}${BOLD}Directory does not exist:${RESET} $selected_dir"
+    echo -e "${SHUNPO_RED}${SHUNPO_BOLD}Directory does not exist:${SHUNPO_RESET} $shunpo_selected_dir"
 fi
 
-cleanup
+shunpo_cleanup

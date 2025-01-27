@@ -1,16 +1,16 @@
 #!/bin/bash
 
 # Colors and formatting.
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR"/colors.sh
-source "$SCRIPT_DIR"/functions.sh
+SHUNPO_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SHUNPO_SCRIPT_DIR"/colors.sh
+source "$SHUNPO_SCRIPT_DIR"/functions.sh
 
 # Remove the bookmarks file if it exists.
-if [ ! -f "$BOOKMARKS_FILE" ] || [ ! -s "$BOOKMARKS_FILE" ]; then
-    echo -e "${ORANGE}${BOLD}No Bookmarks Found.${RESET}"
+if [ ! -f "$SHUNPO_BOOKMARKS_FILE" ] || [ ! -s "$SHUNPO_BOOKMARKS_FILE" ]; then
+    echo -e "${SHUNPO_ORANGE}${SHUNPO_BOLD}No Bookmarks Found.${SHUNPO_RESET}"
     exit 1
 
 else
-    rm "$BOOKMARKS_FILE"
-    echo -e "${RED}${BOLD}Cleared Bookmarks.${RESET}"
+    rm "$SHUNPO_BOOKMARKS_FILE"
+    echo -e "${SHUNPO_RED}${SHUNPO_BOLD}Cleared Bookmarks.${SHUNPO_RESET}"
 fi

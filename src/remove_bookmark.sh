@@ -1,56 +1,56 @@
 #!/bin/bash
 
 # Colors and formatting.
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/colors.sh"
-source "$SCRIPT_DIR/functions.sh"
+SHUNPO_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SHUNPO_SCRIPT_DIR/colors.sh"
+source "$SHUNPO_SCRIPT_DIR/functions.sh"
 
-function handle_kill() {
-    clear_output
-    cleanup
+function shunpo_handle_kill() {
+    shunpo_clear_output
+    shunpo_cleanup
     exit 1
 }
 
-trap 'handle_kill' SIGINT
+trap 'shunpo_handle_kill' SIGINT
 
 # Check if bookmarks exist.
-if ! assert_bookmarks_exist; then
+if ! shunpo_assert_bookmarks_exist; then
     exit 1
 fi
 
-interact_bookmarks "Remove Bookmarks" $1
+shunpo_interact_bookmarks "Remove Bookmarks" $1
 
 # Handle case where bookmark is not set. Corresponds to return code 2.
 if [ $? -eq 2 ]; then
-    if declare -f cleanup >/dev/null; then
-        cleanup
+    if declare -f shunpo_cleanup >/dev/null; then
+        shunpo_cleanup
     fi
-    echo -e "${BOLD}${ORANGE}Bookmark is Empty.${RESET}"
+    echo -e "${SHUNPO_BOLD}${SHUNPO_ORANGE}Bookmark is Empty.${SHUNPO_RESET}"
     exit 1
 fi
 
 bookmarks=()
 while IFS= read -r bookmark; do
     bookmarks+=("$bookmark")
-done <"$BOOKMARKS_FILE"
+done <"$SHUNPO_BOOKMARKS_FILE"
 
-if [[ -z $selected_dir ]]; then
-    unset selected_dir
+if [[ -z $shunpo_selected_dir ]]; then
+    unset shunpo_selected_dir
     exit 1
 
-elif [[ $selected_bookmark_index -ge 0 ]] && [[ $selected_bookmark_index -lt ${#bookmarks[@]} ]]; then
+elif [[ $shunpo_selected_bookmark_index -ge 0 ]] && [[ $shunpo_selected_bookmark_index -lt ${#bookmarks[@]} ]]; then
     # Remove the selected bookmark from the file.
-    awk -v dir="$selected_dir" '$0 != dir' "$BOOKMARKS_FILE" >"${BOOKMARKS_FILE}.tmp" && mv "${BOOKMARKS_FILE}.tmp" "$BOOKMARKS_FILE"
+    awk -v dir="$shunpo_selected_dir" '$0 != dir' "$SHUNPO_BOOKMARKS_FILE" >"${SHUNPO_BOOKMARKS_FILE}.tmp" && mv "${SHUNPO_BOOKMARKS_FILE}.tmp" "$SHUNPO_BOOKMARKS_FILE"
 
     # Display the removed bookmark message.
-    echo -e "${RED}${BOLD}Removed bookmark:${RESET} $selected_dir"
+    echo -e "${SHUNPO_RED}${SHUNPO_BOLD}Removed bookmark:${SHUNPO_RESET} $shunpo_selected_dir"
 
     # Delete the bookmarks file if it is empty.
-    if [ ! -s "$BOOKMARKS_FILE" ]; then
-        rm -f "$BOOKMARKS_FILE"
+    if [ ! -s "$SHUNPO_BOOKMARKS_FILE" ]; then
+        rm -f "$SHUNPO_BOOKMARKS_FILE"
     fi
 else
     exit 1
 fi
 
-cleanup
+shunpo_cleanup
