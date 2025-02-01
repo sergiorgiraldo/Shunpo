@@ -42,9 +42,9 @@ uninstall() {
 		unset SHUNPO_DIR
 	fi
 
-	# Remove shunpo_cmd sourcing line from bashrc.
+	# Remove SHUNPO_CMD source in bashrc.
 	temp_file=$(mktemp)
-	sed '/^source.*\shunpo_cmd/d' "$BASHRC" >"$temp_file"
+	sed '/^source .*\/shunpo_cmd$/d' "$BASHRC" >"$temp_file"
 	mv "$temp_file" "$BASHRC"
 
 	# Remove SHUNPO_DIR export in bashrc.
