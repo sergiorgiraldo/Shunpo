@@ -9,7 +9,7 @@ Building
 Installation
 ---
 To install Shunpo using the nix flake,
-1. Run `nix install .#shunpo` within the `nix/` directory.
+1. Run `nix profile install .#shunpo` within the `nix/` directory.
 2. Start a new terminal session and initialize Shunpo by running `source shunpo_init`.
 3. If you would like to have Shunpo initialize automatically, run the command below, which will append a line to your `.bashrc` to `source` the initialization file.
 ```
