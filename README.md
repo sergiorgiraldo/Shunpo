@@ -12,6 +12,7 @@ If you frequently need to use commands like `cd`, `pushd`, or `popd`, Shunpo is 
 
 ![Powered by 🍵](https://img.shields.io/badge/Powered%20by-%F0%9F%8D%B5-blue?style=flat-square)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Buy%20me%20Tea-ff5f5f?logo=kofi&style=flat-square)](https://ko-fi.com/egurapha)
+![Built With Nix](https://img.shields.io/badge/Built%20with-Nix-5277C3?logo=nixos&logoColor=white&style=flat-square)
 ![Code Formatting](https://img.shields.io/github/actions/workflow/status/egurapha/Shunpo/code_formatting.yml?branch=main&label=Code%20Formatting&style=flat-square)
 ![Unit Tests](https://img.shields.io/github/actions/workflow/status/egurapha/Shunpo/unit_testing.yml?branch=main&label=Unit%20Tests&style=flat-square)
 
