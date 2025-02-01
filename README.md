@@ -21,7 +21,7 @@ Bash 3.2 or newer.
 
 Installation
 ----
-Run `install.sh && source ~/.bashrc`.
+Run `install.sh && source ~/.bashrc`. For nix, click [here](nix/NixREADME.md).
 
 Tutorial
 ----
