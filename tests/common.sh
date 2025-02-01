@@ -9,7 +9,7 @@ fi
 function setup_env {
     HOME=${SHUNPO_TEST_DIR}/home
     mkdir -p $HOME
-    XDG_DATA_HOME=${SHUNPO_TEST_DIR}
+    XDG_DATA_HOME=${SHUNPO_TEST_DIR}/home/.local/share
     mkdir -p $XDG_DATA_HOME
 }
 
@@ -46,5 +46,6 @@ make_directories() {
 }
 
 get_num_bookmarks() {
-    echo $(wc -l <${SHUNPO_DIR}/.shunpo_bookmarks | tr -d '[:space:]')
+    SHUNPO_BOOKMARKS_FILE="${XDG_DATA_HOME:-$HOME/.local/share}/shunpo/.shunpo_bookmarks"
+    echo $(wc -l <$SHUNPO_BOOKMARKS_FILE | tr -d '[:space:]')
 }
