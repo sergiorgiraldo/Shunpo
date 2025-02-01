@@ -11,55 +11,55 @@ BASHRC="$HOME/.bashrc"
 SHUNPO_CMD="$INSTALL_DIR/shunpo_cmd"
 
 setup() {
-	mkdir -p $INSTALL_DIR
-	mkdir -p $SCRIPT_DIR
-	if [ -f $SHUNPO_CMD ]; then
-		rm $SHUNPO_CMD
-	fi
-	touch $SHUNPO_CMD
+    mkdir -p $INSTALL_DIR
+    mkdir -p $SCRIPT_DIR
+    if [ -f $SHUNPO_CMD ]; then
+        rm $SHUNPO_CMD
+    fi
+    touch $SHUNPO_CMD
 }
 
 add_commands() {
-	# Define command set.
-	SCRIPT_DIR="$(realpath "$SCRIPT_DIR")"
-	functions=(
-		"sj() { source \"$SCRIPT_DIR/jump_to_parent.sh\"; }"
-		"sd() { source \"$SCRIPT_DIR/jump_to_child.sh\"; }"
-		"sb() { \"$SCRIPT_DIR/add_bookmark.sh\" \"\$@\"; }"
-		"sr() { \"$SCRIPT_DIR/remove_bookmark.sh\" \"\$@\"; }"
-		"sg() { source \"$SCRIPT_DIR/go_to_bookmark.sh\"; }"
-		"sl() { \"$SCRIPT_DIR/list_bookmarks.sh\"; }"
-		"sc() { \"$SCRIPT_DIR/clear_bookmarks.sh\"; }"
-	)
+    # Define command set.
+    SCRIPT_DIR="$(realpath "$SCRIPT_DIR")"
+    functions=(
+        "sj() { source \"$SCRIPT_DIR/jump_to_parent.sh\"; }"
+        "sd() { source \"$SCRIPT_DIR/jump_to_child.sh\"; }"
+        "sb() { \"$SCRIPT_DIR/add_bookmark.sh\" \"\$@\"; }"
+        "sr() { \"$SCRIPT_DIR/remove_bookmark.sh\" \"\$@\"; }"
+        "sg() { source \"$SCRIPT_DIR/go_to_bookmark.sh\"; }"
+        "sl() { \"$SCRIPT_DIR/list_bookmarks.sh\"; }"
+        "sc() { \"$SCRIPT_DIR/clear_bookmarks.sh\"; }"
+    )
 
-	# Write commands to SHUNPO_CMD file.
-	for func_definition in "${functions[@]}"; do
-		echo "$func_definition" >>"$SHUNPO_CMD"
-		echo "Created Command: ${func_definition%%()*}"
-	done
+    # Write commands to SHUNPO_CMD file.
+    for func_definition in "${functions[@]}"; do
+        echo "$func_definition" >>"$SHUNPO_CMD"
+        echo "Created Command: ${func_definition%%()*}"
+    done
 }
 
 install() {
-	# Store scripts in SCRIPTS_DIR.
-	cp src/* $SCRIPT_DIR
+    # Store scripts in SCRIPTS_DIR.
+    cp src/* $SCRIPT_DIR
 
-	# Add sourcing for shunpo_cmd (overwrite).
-	source_rc_line="source $SHUNPO_CMD"
-	temp_file=$(mktemp)
-	sed '/^source.*\shunpo_cmd/d' "$BASHRC" >"$temp_file"
-	mv "$temp_file" "$BASHRC"
-	echo "$source_rc_line" >>"$BASHRC"
-	echo "Added to BASHRC: $source_rc_line"
+    # Add sourcing for shunpo_cmd (overwrite).
+    source_rc_line="source $SHUNPO_CMD"
+    temp_file=$(mktemp)
+    sed '/^source.*\shunpo_cmd/d' "$BASHRC" >"$temp_file"
+    mv "$temp_file" "$BASHRC"
+    echo "$source_rc_line" >>"$BASHRC"
+    echo "Added to BASHRC: $source_rc_line"
 
-	# Record SHUNPO_DIR for uninstallation (overwrite).
-	install_dir_line="export SHUNPO_DIR=$INSTALL_DIR" >>"$BASHRC$"
-	temp_file=$(mktemp)
-	grep -v '^export SHUNPO_DIR=' "$BASHRC" >"$temp_file"
-	mv "$temp_file" "$BASHRC"
-	echo "$install_dir_line" >>"$BASHRC"
-	echo "Added to BASHRC: $install_dir_line"
+    # Record SHUNPO_DIR for uninstallation (overwrite).
+    install_dir_line="export SHUNPO_DIR=$INSTALL_DIR" >>"$BASHRC$"
+    temp_file=$(mktemp)
+    grep -v '^export SHUNPO_DIR=' "$BASHRC" >"$temp_file"
+    mv "$temp_file" "$BASHRC"
+    echo "$install_dir_line" >>"$BASHRC"
+    echo "Added to BASHRC: $install_dir_line"
 
-	add_commands
+    add_commands
 }
 
 # Install.
