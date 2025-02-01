@@ -13,7 +13,8 @@ uninstall() {
     fi
 
     # Remove bookmarks file.
-    SHUNPO_BOOKMARKS_FILE="$SHUNPO_DIR/.shunpo_bookmarks"
+    SHUNPO_BOOKMARKS_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/shunpo"
+    SHUNPO_BOOKMARKS_FILE="$SHUNPO_BOOKMARKS_DIR/.shunpo_bookmarks"
     if [ -f $SHUNPO_BOOKMARKS_FILE ]; then
         rm $SHUNPO_BOOKMARKS_FILE
         echo "Removed $SHUNPO_BOOKMARKS_FILE"
