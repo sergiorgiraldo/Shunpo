@@ -44,7 +44,8 @@
               )
 
               for func_definition in ''${functions[@]}; do
-                  echo "$func_definition" >> "$SHUNPO_CMD"
+                  echo -n "$func_definition" >> "$SHUNPO_CMD"
+                  echo >> "$SHUNPO_CMD"
               done
 
               # Store scripts in SCRIPTS_DIR.
