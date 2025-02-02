@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [[ "$(uname)" == "Darwin" ]]; then
     SHUNPO_TEST_DIR="/private/tmp/shunpo_test"

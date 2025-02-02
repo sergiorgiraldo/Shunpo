@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 SHUNPO_CYAN='\033[36m'
 SHUNPO_ORANGE='\033[38;5;208m'
 SHUNPO_GREEN='\033[38;5;43m'
