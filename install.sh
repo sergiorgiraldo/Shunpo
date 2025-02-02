@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Get install paths.
 DEFAULT_INSTALL_DIR=${XDG_DATA_HOME:-$HOME/.local/share}/shunpo
@@ -22,21 +22,16 @@ setup() {
 add_commands() {
     # Define command set.
     SCRIPT_DIR="$(realpath "$SCRIPT_DIR")"
-    functions=(
-        "sj() { source \"$SCRIPT_DIR/jump_to_parent.sh\"; }"
-        "sd() { source \"$SCRIPT_DIR/jump_to_child.sh\"; }"
-        "sb() { \"$SCRIPT_DIR/add_bookmark.sh\" \"\$@\"; }"
-        "sr() { \"$SCRIPT_DIR/remove_bookmark.sh\" \"\$@\"; }"
-        "sg() { source \"$SCRIPT_DIR/go_to_bookmark.sh\"; }"
-        "sl() { \"$SCRIPT_DIR/list_bookmarks.sh\"; }"
-        "sc() { \"$SCRIPT_DIR/clear_bookmarks.sh\"; }"
-    )
-
-    # Write commands to SHUNPO_CMD file.
-    for func_definition in "${functions[@]}"; do
-        echo "$func_definition" >>"$SHUNPO_CMD"
-        echo "Created Command: ${func_definition%%()*}"
-    done
+    cat >"$SHUNPO_CMD" <<EOF
+#!/usr/bin/env bash
+sj() { source "$SCRIPT_DIR/jump_to_parent.sh"; }
+sd() { source "$SCRIPT_DIR/jump_to_child.sh"; }
+sb() { "$SCRIPT_DIR/add_bookmark.sh" "\$@"; }
+sr() { "$SCRIPT_DIR/remove_bookmark.sh" "\$@"; }
+sg() { source "$SCRIPT_DIR/go_to_bookmark.sh"; }
+sl() { "$SCRIPT_DIR/list_bookmarks.sh"; }
+sc() { "$SCRIPT_DIR/clear_bookmarks.sh"; }
+EOF
 }
 
 install() {

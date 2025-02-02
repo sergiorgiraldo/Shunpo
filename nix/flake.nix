@@ -33,20 +33,17 @@
               # Define commands.
               SHUNPO_CMD=$SCRIPT_DIR/shunpo_cmd
               touch $SHUNPO_CMD
-              functions=(
-                  "sj() { source \"$SCRIPT_DIR/jump_to_parent.sh\"; }"
-                  "sd() { source \"$SCRIPT_DIR/jump_to_child.sh\"; }"
-                  "sb() { \"$SCRIPT_DIR/add_bookmark.sh\" \"\$@\"; }"
-                  "sr() { \"$SCRIPT_DIR/remove_bookmark.sh\" \"\$@\"; }"
-                  "sg() { source \"$SCRIPT_DIR/go_to_bookmark.sh\"; }"
-                  "sl() { \"$SCRIPT_DIR/list_bookmarks.sh\"; }"
-                  "sc() { \"$SCRIPT_DIR/clear_bookmarks.sh\"; }"
-              )
 
-              for func_definition in ''${functions[@]}; do
-                  echo -n "$func_definition" >> "$SHUNPO_CMD"
-                  echo >> "$SHUNPO_CMD"
-              done
+              cat > "$SHUNPO_CMD" <<EOF
+#!/usr/bin/env bash
+sj() { source "$SCRIPT_DIR/jump_to_parent.sh"; }
+sd() { source "$SCRIPT_DIR/jump_to_child.sh"; }
+sb() { "$SCRIPT_DIR/add_bookmark.sh" "\$@"; }
+sr() { "$SCRIPT_DIR/remove_bookmark.sh" "\$@"; }
+sg() { source "$SCRIPT_DIR/go_to_bookmark.sh"; }
+sl() { "$SCRIPT_DIR/list_bookmarks.sh"; }
+sc() { "$SCRIPT_DIR/clear_bookmarks.sh"; }
+EOF
 
               # Store scripts in SCRIPTS_DIR.
               cp $src/* $SCRIPT_DIR
@@ -54,7 +51,7 @@
               # Write initialization file that must be sourced.
               SHUNPO_INIT=$INSTALL_DIR/shunpo_init
               echo "source $SHUNPO_CMD" > "$SHUNPO_INIT"
-              chmod +x $SHUNPO_INIT
+              chmod +x $SHUNPO_INIT # not necessary, but keep for auto-complete.
             '';
 
 
