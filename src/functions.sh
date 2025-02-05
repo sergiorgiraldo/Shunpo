@@ -1,7 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Default Bookmarks Path.
-SHUNPO_BOOKMARKS_FILE="$SHUNPO_DIR/.shunpo_bookmarks"
+SHUNPO_BOOKMARKS_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/shunpo/"
+if [ ! -d "$SHUNPO_BOOKMARKS_DIR" ]; then
+    mkdir -p "$SHUNPO_BOOKMARKS_DIR"
+fi
+
+SHUNPO_BOOKMARKS_FILE="$SHUNPO_BOOKMARKS_DIR/.shunpo_bookmarks"
 
 # Function to display bookmarks with pagination.
 function shunpo_interact_bookmarks() {
@@ -438,6 +443,7 @@ function shunpo_assert_bookmarks_exist() {
 function shunpo_cleanup() {
     # Clean up to avoid namespace pollution.
     unset SHUNPO_BOOKMARKS_FILE
+    unset SHUNPO_BOOKMARKS_DIR
     unset IFS
     unset shunpo_selected_dir
     unset shunpo_selected_bookmark_index

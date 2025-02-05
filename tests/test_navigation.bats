@@ -12,7 +12,7 @@ setup() {
     printf '\n' | ./install.sh
     working_dir=$(pwd)
     source ${SHUNPO_TEST_DIR}/home/.bashrc
-    source ${SHUNPO_DIR}/functions.sh
+    source ${SHUNPO_DIR}/scripts/functions.sh
     cd ${SHUNPO_TEST_DIR}
 }
 
