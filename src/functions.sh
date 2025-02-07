@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 # Default Bookmarks Path.
-SHUNPO_BOOKMARKS_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/shunpo/"
+SHUNPO_BOOKMARKS_DIR="$HOME/.shunpo/"
 if [ ! -d "$SHUNPO_BOOKMARKS_DIR" ]; then
     mkdir -p "$SHUNPO_BOOKMARKS_DIR"
 fi
 
-SHUNPO_BOOKMARKS_FILE="$SHUNPO_BOOKMARKS_DIR/.shunpo_bookmarks"
+SHUNPO_BOOKMARKS_FILE="$SHUNPO_BOOKMARKS_DIR/shunpo_bookmarks"
 
 # Function to display bookmarks with pagination.
 function shunpo_interact_bookmarks() {
@@ -73,7 +73,7 @@ function shunpo_interact_bookmarks() {
         fi
 
         padding_lines=$((padding_lines + 1)) # header.
-        shunpo_add_space $padding_lines
+        # shunpo_add_space $padding_lines
 
         tput sc
         echo -e "${SHUNPO_BOLD}${SHUNPO_CYAN}Shunpo <$1>${SHUNPO_RESET}"
@@ -93,32 +93,32 @@ function shunpo_interact_bookmarks() {
             if [ $((current_page + 1)) -le $((last_page - 1)) ]; then
                 current_page=$((current_page + 1))
             fi
-            shunpo_clear_output
+            # shunpo_clear_output
 
         elif [[ $input == "p" ]]; then
             if [ $((current_page - 1)) -ge 0 ]; then
                 current_page=$((current_page - 1))
             fi
-            shunpo_clear_output
+            # shunpo_clear_output
 
         elif [[ $input =~ ^[0-9]+$ ]] && [ "$input" -ge 0 ] && [ "$input" -lt $max_per_page ]; then
             # Process bookmark selection input.
             shunpo_selected_bookmark_index=$((current_page * max_per_page + input))
             if [[ $shunpo_selected_bookmark_index -lt $total_bookmarks ]]; then
                 shunpo_selected_dir="${bookmarks[$shunpo_selected_bookmark_index]}"
-                shunpo_clear_output
+                # shunpo_clear_output
                 tput cnorm
                 return 0
-            else
-                shunpo_clear_output
+            # else
+                # shunpo_clear_output
             fi
         else
-            shunpo_clear_output
+            # shunpo_clear_output
             tput cnorm
             return 0
         fi
     done
-    shunpo_clear_output
+    # shunpo_clear_output
     tput cnorm
     return 0
 }
@@ -413,8 +413,11 @@ function shunpo_add_space() {
     total_lines=$(tput lines)
 
     # Fetch the current cursor row position using ANSI escape codes.
-    cursor_line=$(IFS=';' read -rsdR -p $'\033[6n' -a pos && echo "${pos[0]#*[}")
-
+    cursor_line=$(
+    print -n $'\033[6n'         # send the ANSI query for cursor position
+    IFS=';' read -rsd R pos col  # read until the delimiter "R", splitting at ';'
+    echo "${pos#*[}"            # remove everything up to "[" to get the row number
+    )
     # Calculate lines from current position to bottom.
     lines_to_bottom=$((total_lines - cursor_line))
     if [ "$lines_to_bottom" -lt "$1" ]; then
@@ -453,7 +456,7 @@ function shunpo_cleanup() {
     unset -f shunpo_assert_bookmarks_exist
     unset -f shunpo_jump_to_parent_dir
     unset -f shunpo_jump_to_child_dir
-    unset -f shunpo_is_cached
+    typeset -f shunpo_is_cached > /dev/null && unset -f shunpo_is_cached
     unset -f shunpo_handle_kill
     unset -f shunpo_cleanup
     tput cnorm

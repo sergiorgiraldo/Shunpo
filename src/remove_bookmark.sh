@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Colors and formatting.
-SHUNPO_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SHUNPO_SCRIPT_DIR="/Users/GK47LX/.bin/shunpo"
 source "$SHUNPO_SCRIPT_DIR/colors.sh"
 source "$SHUNPO_SCRIPT_DIR/functions.sh"
 
