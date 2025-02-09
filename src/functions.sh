@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Default Bookmarks Path.
-SHUNPO_BOOKMARKS_DIR="$HOME/.shunpo/"
+SHUNPO_BOOKMARKS_DIR="$HOME/.shunpo"
 if [ ! -d "$SHUNPO_BOOKMARKS_DIR" ]; then
     mkdir -p "$SHUNPO_BOOKMARKS_DIR"
 fi
@@ -20,9 +20,10 @@ function shunpo_interact_bookmarks() {
     local padding_lines
 
     tput civis
-
+    echo "$SHUNPO_BOOKMARKS_FILE"
     # Read bookmarks into an array.
     while IFS= read -r bookmark; do
+        echo "#### $bookmark"
         bookmarks+=("$bookmark")
     done <"$SHUNPO_BOOKMARKS_FILE"
 
@@ -32,9 +33,10 @@ function shunpo_interact_bookmarks() {
         echo -e "${SHUNPO_BOLD}${SHUNPO_ORANGE}No Bookmarks Found.${SHUNPO_RESET}"
         return 0
     fi
-
+    echo "0000000 $total_bookmarks"
     # If a selection is specified, select it.
     if [ -n "$2" ]; then
+        echo "111111"
         if ! [[ $2 =~ ^[0-9]+$ ]]; then
             echo -e "${SHUNPO_BOLD}${SHUNPO_ORANGE}Invalid Bookmark Selection.${SHUNPO_RESET}"
             return 1
@@ -49,18 +51,21 @@ function shunpo_interact_bookmarks() {
             fi
         fi
     fi
+    echo "222222"
 
     last_page=$(((total_bookmarks + max_per_page - 1) / max_per_page))
 
+    echo "$bookmarks $last_page"
+
     # Pagination loop.
     while true; do
+        echo "333333"
         # Calculate the start and end indices for the current page.
         start_index=$((current_page * max_per_page))
         end_index=$((start_index + max_per_page))
         if [ "$end_index" -gt "$total_bookmarks" ]; then
             end_index=$total_bookmarks
         fi
-
         # Pad the bottom of the terminal to avoid erroneous printing.
         if [ "$max_per_page" -lt "$total_bookmarks" ]; then
             padding_lines=$max_per_page
@@ -88,7 +93,7 @@ function shunpo_interact_bookmarks() {
         fi
 
         # Read input to select bookmarks and cycle through pages.
-        read -rsn1 input
+        read -rs -n1 input
         if [[ $input == "n" ]]; then
             if [ $((current_page + 1)) -le $((last_page - 1)) ]; then
                 current_page=$((current_page + 1))
@@ -208,7 +213,7 @@ function shunpo_jump_to_parent_dir() {
         fi
 
         # Read and process user input.
-        read -rsn1 input
+        read -rs -n1 input
         if [[ $input == "n" ]]; then
             if [ $((current_page + 1)) -lt "$last_page" ]; then
                 current_page=$((current_page + 1))
@@ -350,7 +355,7 @@ function shunpo_jump_to_child_dir() {
         fi
 
         # Process input.
-        read -rsn1 input
+        read -rs -n1 input
         if [[ $input == "n" ]]; then
             if [ $((current_page + 1)) -lt "$last_page" ]; then
                 current_page=$((current_page + 1))

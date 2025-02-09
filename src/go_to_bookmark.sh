@@ -9,16 +9,14 @@ source "$SHUNPO_SCRIPT_DIR"/functions.sh
 
 function shunpo_handle_kill() {
     shunpo_clear_output
-    if declare -f shunpo_cleanup >/dev/null; then
-        shunpo_cleanup
-    fi
-    return 1
+    shunpo_cleanup
+    exit 1
 }
 
-trap 'shunpo_handle_kill; return 1' SIGINT
+trap 'shunpo_handle_kill' SIGINT
 
 if ! shunpo_assert_bookmarks_exist; then
-    return 1
+    exit 1
 fi
 
 shunpo_interact_bookmarks "Go To Bookmark" "$1"

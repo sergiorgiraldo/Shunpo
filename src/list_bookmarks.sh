@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# This script should be sourced and not executed.
+
 # Colors and formatting
 SHUNPO_SCRIPT_DIR="/Users/GK47LX/.bin/shunpo"
 source "$SHUNPO_SCRIPT_DIR"/colors.sh
@@ -19,3 +21,4 @@ fi
 
 shunpo_interact_bookmarks "List Bookmarks"
 shunpo_cleanup
+exit 0
